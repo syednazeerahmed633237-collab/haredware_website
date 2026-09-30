@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -161,7 +160,7 @@
             margin-top: 5px;
         }
 
-        .upload-button:hover:not(:disabled) {
+        .upload-button:hover {
             background: #000000;
         }
 
@@ -181,10 +180,6 @@
             font-weight: 700;
             cursor: pointer;
             margin-bottom: 14px;
-        }
-
-        .login-button:hover {
-            background: #f3f4f6;
         }
 
         .status {
@@ -247,7 +242,6 @@
         }
 
         @media (max-width: 600px) {
-
             .page {
                 padding: 20px 14px 40px;
             }
@@ -265,981 +259,884 @@
                 grid-template-columns: 1fr;
             }
         }
+    
+        /* Google Drive popup UI */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.58);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .drive-modal {
+            width: min(420px, 100%);
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+            text-align: center;
+            animation: modalIn 0.2s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .drive-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 18px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: #f3f4f6;
+            font-size: 31px;
+        }
+
+        .drive-modal h2 {
+            margin: 0 0 8px;
+            font-size: 22px;
+            color: #111827;
+        }
+
+        .drive-modal p {
+            margin: 0 auto 22px;
+            max-width: 330px;
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .modal-button {
+            height: 46px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-cancel {
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+        }
+
+        .modal-connect {
+            border: 0;
+            background: #111827;
+            color: #ffffff;
+        }
+
+        .modal-connect:hover {
+            background: #000000;
+        }
+
+        .modal-success-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 480px) {
+            .drive-modal {
+                padding: 24px 18px;
+                border-radius: 17px;
+            }
+
+            .modal-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div class="page">
+<div class="page">
 
-        <div class="header">
-            <div class="brand">Log HARDWARE</div>
+    <div class="header">
+        <div class="brand">Log HARDWARE</div>
 
-            <h1>Upload Product Image</h1>
+        <h1>Upload Product Image</h1>
 
-            <p class="subtitle">
-                Enter the product details and upload or capture the product image.
-            </p>
+        <p class="subtitle">
+            Enter the product details and upload or capture the product image.
+        </p>
+    </div>
+
+    <div class="card">
+
+        <!-- GOOGLE DRIVE STATUS -->
+        <div class="drive-status">
+            <div>
+                Drive status:
+                <strong id="driveStatus">Not connected</strong>
+            </div>
+
+            <button
+                type="button"
+                class="logout-button"
+                id="logoutButton"
+                style="display:none;">
+                Sign out
+            </button>
         </div>
 
+        <!-- PRODUCT NAME -->
+        <div class="form-group">
+            <label for="productName">
+                Product Name <span class="required">*</span>
+            </label>
 
-        <div class="card">
+            <input
+                type="text"
+                id="productName"
+                placeholder="Example: LG Refrigerator Adjustable Heavy Duty Stand"
+                autocomplete="off">
+        </div>
 
-            <!-- GOOGLE DRIVE STATUS -->
+        <!-- CATEGORY -->
+        <div class="form-group">
+            <label for="category">
+                Category <span class="required">*</span>
+            </label>
 
-            <div class="drive-status">
+            <select id="category">
+                <option value="">Select Category</option>
 
-                <div>
-                    Drive status:
-                    <strong id="driveStatus">Not connected</strong>
-                </div>
+                <option value="refrigerator">Refrigerator</option>
+                <option value="air-conditioner">Air Conditioner</option>
+                <option value="washing-machine">Washing Machine</option>
+                <option value="microwave">Microwave</option>
+                <option value="television">Television</option>
+                <option value="kitchen-appliance">Kitchen Appliance</option>
+                <option value="general-tool">General Tool</option>
+                <option value="spare-parts">Spare Parts</option>
+                <option value="accessories">Accessories</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <!-- BRAND -->
+        <div class="form-group">
+            <label for="brand">
+                Brand <span class="required">*</span>
+            </label>
+
+            <select id="brand">
+                <option value="">Select Brand</option>
+
+                <option value="lg">LG</option>
+                <option value="samsung">Samsung</option>
+                <option value="whirlpool">Whirlpool</option>
+                <option value="godrej">Godrej</option>
+                <option value="ifb">IFB</option>
+                <option value="haier">Haier</option>
+                <option value="panasonic">Panasonic</option>
+                <option value="voltas">Voltas</option>
+                <option value="daikin">Daikin</option>
+                <option value="hitachi">Hitachi</option>
+                <option value="bosch">Bosch</option>
+                <option value="general-tool">General Tool</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <!-- SIZE / PART NUMBER -->
+        <div class="form-group">
+            <label for="partNumber">
+                Size / Part Number <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="partNumber"
+                placeholder="Example: CLS32170401"
+                autocomplete="off">
+        </div>
+
+        <!-- GENERATED FILENAME -->
+        <div class="filename-box">
+            <div class="filename-label">
+                GOOGLE DRIVE FILENAME
+            </div>
+
+            <div id="generatedFilename">
+                Enter product details to generate filename
+            </div>
+        </div>
+
+        <br>
+
+        <!-- IMAGE -->
+        <div class="image-area">
+
+            <img
+                id="imagePreview"
+                class="preview"
+                alt="Product preview">
+
+            <div class="image-buttons">
 
                 <button
                     type="button"
-                    class="logout-button"
-                    id="logoutButton"
-                    style="display:none;">
-                    Sign out
+                    class="image-button"
+                    id="chooseImageButton">
+                    Choose Image
+                </button>
+
+                <button
+                    type="button"
+                    class="image-button"
+                    id="cameraButton">
+                    📷 Take Photo
                 </button>
 
             </div>
 
-
-            <!-- PRODUCT NAME -->
-
-            <div class="form-group">
-
-                <label for="productName">
-                    Product Name
-                    <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="productName"
-                    placeholder="Example: LG Refrigerator Adjustable Heavy Duty Stand"
-                    autocomplete="off">
-
-            </div>
-
-
-            <!-- CATEGORY -->
-
-            <div class="form-group">
-
-                <label for="category">
-                    Category
-                    <span class="required">*</span>
-                </label>
-
-                <select id="category">
-
-                    <option value="">Select Category</option>
-
-                    <option value="refrigerator">
-                        Refrigerator
-                    </option>
-
-                    <option value="air-conditioner">
-                        Air Conditioner
-                    </option>
-
-                    <option value="washing-machine">
-                        Washing Machine
-                    </option>
-
-                    <option value="microwave">
-                        Microwave
-                    </option>
-
-                    <option value="television">
-                        Television
-                    </option>
-
-                    <option value="kitchen-appliance">
-                        Kitchen Appliance
-                    </option>
-
-                    <option value="general-tool">
-                        General Tool
-                    </option>
-
-                    <option value="spare-parts">
-                        Spare Parts
-                    </option>
-
-                    <option value="accessories">
-                        Accessories
-                    </option>
-
-                    <option value="other">
-                        Other
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- BRAND -->
-
-            <div class="form-group">
-
-                <label for="brand">
-                    Brand
-                    <span class="required">*</span>
-                </label>
-
-                <select id="brand">
-
-                    <option value="">Select Brand</option>
-
-                    <option value="lg">LG</option>
-                    <option value="samsung">Samsung</option>
-                    <option value="whirlpool">Whirlpool</option>
-                    <option value="godrej">Godrej</option>
-                    <option value="ifb">IFB</option>
-                    <option value="haier">Haier</option>
-                    <option value="panasonic">Panasonic</option>
-                    <option value="voltas">Voltas</option>
-                    <option value="daikin">Daikin</option>
-                    <option value="hitachi">Hitachi</option>
-                    <option value="bosch">Bosch</option>
-                    <option value="general-tool">General Tool</option>
-                    <option value="other">Other</option>
-
-                </select>
-
-            </div>
-
-
-            <!-- SIZE / PART NUMBER -->
-
-            <div class="form-group">
-
-                <label for="partNumber">
-                    Size / Part Number
-                    <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="partNumber"
-                    placeholder="Example: CLS32170401"
-                    autocomplete="off">
-
-            </div>
-
-
-            <!-- GENERATED FILENAME -->
-
-            <div class="filename-box">
-
-                <div class="filename-label">
-                    GOOGLE DRIVE FILENAME
-                </div>
-
-                <div id="generatedFilename">
-                    Enter product details to generate filename
-                </div>
-
-            </div>
-
-
-            <br>
-
-
-            <!-- IMAGE -->
-
-            <div class="image-area">
-
-                <img
-                    id="imagePreview"
-                    class="preview"
-                    alt="Product preview">
-
-
-                <div class="image-buttons">
-
-                    <button
-                        type="button"
-                        class="image-button"
-                        id="chooseImageButton">
-                        Choose Image
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="image-button"
-                        id="cameraButton">
-                        📷 Take Photo
-                    </button>
-
-                </div>
-
-
-                <input
-                    type="file"
-                    id="imageInput"
-                    accept="image/*"
-                    hidden>
-
-
-                <input
-                    type="file"
-                    id="cameraInput"
-                    accept="image/*"
-                    capture="environment"
-                    hidden>
-
-            </div>
-
-
-            <!-- CONNECT GOOGLE DRIVE -->
-
-            <button
-                type="button"
-                class="login-button"
-                id="loginButton">
-                Connect Google Drive
-            </button>
-
-
-            <!-- UPLOAD -->
-
-            <button
-                type="button"
-                class="upload-button"
-                id="uploadButton"
-                disabled>
-                Upload to Google Drive
-            </button>
-
-
-            <div
-                id="status"
-                class="status">
-            </div>
+            <!-- Normal file -->
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                hidden>
+
+            <!-- Camera -->
+            <input
+                type="file"
+                id="cameraInput"
+                accept="image/*"
+                capture="environment"
+                hidden>
 
         </div>
 
+        <!-- CONNECT DRIVE -->
+        <button
+            type="button"
+            class="login-button"
+            id="loginButton">
+            Connect Google Drive
+        </button>
+
+        <!-- UPLOAD -->
+        <button
+            type="button"
+            class="upload-button"
+            id="uploadButton"
+            disabled>
+            Upload to Google Drive
+        </button>
+
+        <div id="status" class="status"></div>
+
+    </div>
+
+</div>
+
+<!-- GOOGLE IDENTITY SERVICES -->
+
+    <!-- GOOGLE DRIVE CONNECT MODAL -->
+    <div class="modal-overlay" id="driveConnectModal" aria-hidden="true">
+        <div class="drive-modal" role="dialog" aria-modal="true" aria-labelledby="driveModalTitle">
+            <div class="drive-icon">☁️</div>
+
+            <h2 id="driveModalTitle">Connect Google Drive</h2>
+
+            <p>
+                Connect your Google Drive account to securely save product images
+                in the Log HARDWARE Images folder.
+            </p>
+
+            <div class="modal-actions">
+                <button type="button" class="modal-button modal-cancel" id="cancelDriveButton">
+                    Cancel
+                </button>
+
+                <button type="button" class="modal-button modal-connect" id="confirmDriveButton">
+                    Connect Google Drive
+                </button>
+            </div>
+        </div>
     </div>
 
 
-    <!-- GOOGLE IDENTITY SERVICES -->
+    <!-- GOOGLE DRIVE CONNECTED MODAL -->
+    <div class="modal-overlay" id="driveSuccessModal" aria-hidden="true">
+        <div class="drive-modal" role="dialog" aria-modal="true" aria-labelledby="driveSuccessTitle">
 
-    <script src="https://accounts.google.com/gsi/client"></script>
+            <div class="modal-success-icon">✓</div>
 
-    <!-- YOUR GOOGLE DRIVE UPLOAD JS -->
+            <h2 id="driveSuccessTitle">Google Drive Connected</h2>
 
-    <script src="google_drive_upload.js"></script>
+            <p>
+                Your Google Drive is connected successfully.
+                You can now upload product images to Log HARDWARE Images.
+            </p>
 
+            <button
+                type="button"
+                class="modal-button modal-connect"
+                id="closeSuccessButton"
+                style="width:100%;">
+                Continue
+            </button>
 
-    <script>
+        </div>
+    </div>
 
-        let selectedFile = null;
+<script src="https://accounts.google.com/gsi/client"></script>
 
+<script src="google_drive_upload.js"></script>
 
-        /*
-        ------------------------------------------------------
-        DOM ELEMENTS
-        ------------------------------------------------------
-        */
+<script>
 
-        const productName =
-            document.getElementById("productName");
+    let selectedFile = null;
 
-        const category =
-            document.getElementById("category");
+    const productName = document.getElementById("productName");
+    const category = document.getElementById("category");
+    const brand = document.getElementById("brand");
+    const partNumber = document.getElementById("partNumber");
 
-        const brand =
-            document.getElementById("brand");
+    const imageInput = document.getElementById("imageInput");
+    const cameraInput = document.getElementById("cameraInput");
 
-        const partNumber =
-            document.getElementById("partNumber");
+    const imagePreview = document.getElementById("imagePreview");
 
+    const generatedFilename =
+        document.getElementById("generatedFilename");
 
-        const imageInput =
-            document.getElementById("imageInput");
+    const chooseImageButton =
+        document.getElementById("chooseImageButton");
 
-        const cameraInput =
-            document.getElementById("cameraInput");
+    const cameraButton =
+        document.getElementById("cameraButton");
 
+    const loginButton =
+        document.getElementById("loginButton");
 
-        const imagePreview =
-            document.getElementById("imagePreview");
+    const uploadButton =
+        document.getElementById("uploadButton");
 
+    const logoutButton =
+        document.getElementById("logoutButton");
 
-        const generatedFilename =
-            document.getElementById("generatedFilename");
+    const driveStatus =
+        document.getElementById("driveStatus");
 
-
-        const chooseImageButton =
-            document.getElementById("chooseImageButton");
-
-        const cameraButton =
-            document.getElementById("cameraButton");
-
-
-        const loginButton =
-            document.getElementById("loginButton");
-
-        const uploadButton =
-            document.getElementById("uploadButton");
-
-        const logoutButton =
-            document.getElementById("logoutButton");
-
-
-        const driveStatus =
-            document.getElementById("driveStatus");
-
-        const status =
-            document.getElementById("status");
+    const status =
+        document.getElementById("status");
 
 
-        /*
-        ------------------------------------------------------
-        SLUGIFY
-        ------------------------------------------------------
-        */
+    /*
+     * Convert text to filename-safe format.
+     */
+    function slugify(value) {
 
-        function slugify(value) {
-
-            return value
-                .toString()
-                .trim()
-                .toLowerCase()
-                .replace(/&/g, "and")
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-+|-+$/g, "");
-
-        }
+        return value
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/&/g, "and")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+    }
 
 
-        /*
-        ------------------------------------------------------
-        GET FILE EXTENSION
-        ------------------------------------------------------
-        */
+    /*
+     * Generate:
+     *
+     * product-C-category-B-brand-S-partnumber.jpg
+     */
+    function getGeneratedFilename() {
 
-        function getFileExtension(filename) {
+        const name = slugify(productName.value);
+        const cat = slugify(category.value);
+        const br = slugify(brand.value);
+        const part = slugify(partNumber.value);
 
-            const parts =
-                filename.split(".");
-
-            if (parts.length < 2) {
-                return "jpg";
-            }
-
-            let extension =
-                parts.pop().toLowerCase();
-
-            if (extension === "jpeg") {
-                extension = "jpg";
-            }
-
-            if (
-                !["jpg", "png", "webp"].includes(extension)
-            ) {
-                return "jpg";
-            }
-
-            return extension;
-
-        }
-
-
-        /*
-        ------------------------------------------------------
-        GENERATE GOOGLE DRIVE FILENAME
-        ------------------------------------------------------
-
-        product-C-category-B-brand-S-partnumber.jpg
-        ------------------------------------------------------
-        */
-
-        function getGeneratedFilename() {
-
-            const name =
-                slugify(productName.value);
-
-            const cat =
-                slugify(category.value);
-
-            const br =
-                slugify(brand.value);
-
-            const part =
-                slugify(partNumber.value);
-
-
-            if (!name || !cat || !br || !part) {
-
-                generatedFilename.textContent =
-                    "Enter product details to generate filename";
-
-                return null;
-            }
-
-
-            const extension =
-                selectedFile
-                    ? getFileExtension(selectedFile.name)
-                    : "jpg";
-
-
-            const filename =
-                `${name}-C-${cat}-B-${br}-S-${part}.${extension}`;
-
+        if (!name || !cat || !br || !part) {
 
             generatedFilename.textContent =
-                filename;
+                "Enter product details to generate filename";
+
+            return null;
+        }
+
+        const extension =
+            selectedFile
+                ? getFileExtension(selectedFile.name)
+                : "jpg";
+
+        const filename =
+            `${name}-C-${cat}-B-${br}-S-${part}.${extension}`;
+
+        generatedFilename.textContent = filename;
+
+        return filename;
+    }
 
 
-            return filename;
+    function getFileExtension(filename) {
+
+        const parts = filename.split(".");
+
+        if (parts.length < 2) {
+            return "jpg";
+        }
+
+        let extension =
+            parts.pop().toLowerCase();
+
+        if (extension === "jpeg") {
+            extension = "jpg";
+        }
+
+        if (!["jpg", "png", "webp"].includes(extension)) {
+            return "jpg";
+        }
+
+        return extension;
+    }
+
+
+    /*
+     * Update filename whenever details change.
+     */
+    [
+        productName,
+        category,
+        brand,
+        partNumber
+    ].forEach(element => {
+
+        element.addEventListener("input", getGeneratedFilename);
+        element.addEventListener("change", getGeneratedFilename);
+
+    });
+
+
+    /*
+     * Choose image.
+     */
+    chooseImageButton.addEventListener("click", () => {
+
+        imageInput.click();
+
+    });
+
+
+    /*
+     * Camera.
+     */
+    cameraButton.addEventListener("click", () => {
+
+        cameraInput.click();
+
+    });
+
+
+    /*
+     * Handle selected image.
+     */
+    function handleImage(file) {
+
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+
+            showStatus(
+                "Please select an image file.",
+                "error"
+            );
+
+            return;
+        }
+
+        selectedFile = file;
+
+        updateUploadButton();
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+
+            imagePreview.src = event.target.result;
+            imagePreview.style.display = "block";
+
+        };
+
+        reader.readAsDataURL(file);
+
+        getGeneratedFilename();
+
+        updateUploadButton();
+
+    }
+
+
+    imageInput.addEventListener("change", event => {
+
+        handleImage(event.target.files[0]);
+
+    });
+
+
+    cameraInput.addEventListener("change", event => {
+
+        handleImage(event.target.files[0]);
+
+    });
+
+
+    /*
+     * Update upload button.
+     */
+    function updateUploadButton() {
+
+        /*
+         * The button only depends on the form data and image.
+         * Google authentication is checked again when Upload is clicked.
+         * This avoids the OAuth token state preventing the button from
+         * visually enabling after a successful sign-in.
+         */
+        const ready =
+            productName.value.trim() !== "" &&
+            category.value !== "" &&
+            brand.value !== "" &&
+            partNumber.value.trim() !== "" &&
+            selectedFile !== null;
+
+        uploadButton.disabled = !ready;
+
+        if (ready) {
+            uploadButton.removeAttribute("disabled");
+        } else {
+            uploadButton.setAttribute("disabled", "disabled");
+        }
+
+        return ready;
+    }
+
+
+    [
+        productName,
+        category,
+        brand,
+        partNumber
+    ].forEach(element => {
+
+        element.addEventListener("input", updateUploadButton);
+        element.addEventListener("change", updateUploadButton);
+
+    });
+
+
+    /*
+     * Google Drive login.
+     */
+    const driveConnectModal =
+        document.getElementById("driveConnectModal");
+
+    const driveSuccessModal =
+        document.getElementById("driveSuccessModal");
+
+    const cancelDriveButton =
+        document.getElementById("cancelDriveButton");
+
+    const confirmDriveButton =
+        document.getElementById("confirmDriveButton");
+
+    const closeSuccessButton =
+        document.getElementById("closeSuccessButton");
+
+
+    function openModal(modal) {
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+    }
+
+
+    function closeModal(modal) {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+    }
+
+
+    loginButton.addEventListener("click", () => {
+        openModal(driveConnectModal);
+    });
+
+
+    cancelDriveButton.addEventListener("click", () => {
+        closeModal(driveConnectModal);
+    });
+
+
+    closeSuccessButton.addEventListener("click", () => {
+        closeModal(driveSuccessModal);
+    });
+
+
+    driveConnectModal.addEventListener("click", event => {
+
+        if (event.target === driveConnectModal) {
+            closeModal(driveConnectModal);
+        }
+
+    });
+
+
+    driveSuccessModal.addEventListener("click", event => {
+
+        if (event.target === driveSuccessModal) {
+            closeModal(driveSuccessModal);
+        }
+
+    });
+
+
+    confirmDriveButton.addEventListener("click", async () => {
+
+        confirmDriveButton.disabled = true;
+        confirmDriveButton.textContent = "Connecting...";
+
+        try {
+
+            await GoogleDriveUploader.signIn();
+
+            updateDriveUI();
+            updateUploadButton();
+
+            closeModal(driveConnectModal);
+
+            openModal(driveSuccessModal);
+
+            showStatus(
+                "Google Drive connected successfully.",
+                "success"
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Google Drive login error:",
+                error
+            );
+
+            closeModal(driveConnectModal);
+
+            showStatus(
+                error.message ||
+                "Google Drive connection failed.",
+                "error"
+            );
+
+        } finally {
+
+            confirmDriveButton.disabled = false;
+            confirmDriveButton.textContent =
+                "Connect Google Drive";
 
         }
 
-
-        /*
-        ------------------------------------------------------
-        UPDATE FILENAME
-        ------------------------------------------------------
-        */
-
-        [
-            productName,
-            category,
-            brand,
-            partNumber
-        ].forEach(element => {
-
-            element.addEventListener(
-                "input",
-                () => {
-                    getGeneratedFilename();
-                    updateUploadButton();
-                }
-            );
-
-            element.addEventListener(
-                "change",
-                () => {
-                    getGeneratedFilename();
-                    updateUploadButton();
-                }
-            );
-
-        });
+    });
 
 
-        /*
-        ------------------------------------------------------
-        CHOOSE IMAGE
-        ------------------------------------------------------
-        */
+    document.addEventListener("keydown", event => {
 
-        chooseImageButton.addEventListener(
-            "click",
-            () => {
+        if (event.key === "Escape") {
+            closeModal(driveConnectModal);
+            closeModal(driveSuccessModal);
+        }
 
-                imageInput.click();
+    });
 
-            }
+
+    /*
+     * Sign out.
+     */
+    logoutButton.addEventListener("click", () => {
+
+        GoogleDriveUploader.signOut();
+
+        updateDriveUI();
+
+        updateUploadButton();
+
+        showStatus(
+            "Google Drive disconnected.",
+            "info"
         );
 
-
-        /*
-        ------------------------------------------------------
-        CAMERA
-        ------------------------------------------------------
-        */
-
-        cameraButton.addEventListener(
-            "click",
-            () => {
-
-                cameraInput.click();
-
-            }
-        );
+    });
 
 
-        /*
-        ------------------------------------------------------
-        HANDLE IMAGE
-        ------------------------------------------------------
-        */
+    /*
+     * Upload.
+     */
+    uploadButton.addEventListener("click", async () => {
 
-        function handleImage(file) {
+        if (!selectedFile) {
 
-            if (!file) {
-                return;
-            }
+            showStatus(
+                "Please select or capture an image.",
+                "error"
+            );
 
+            return;
 
-            if (!file.type.startsWith("image/")) {
+        }
 
-                showStatus(
-                    "Please select an image file.",
-                    "error"
-                );
+        if (
+            !window.GoogleDriveUploader ||
+            !GoogleDriveUploader.isSignedIn()
+        ) {
+            showStatus(
+                "Please connect Google Drive first.",
+                "error"
+            );
 
-                return;
-            }
+            updateUploadButton();
+            return;
+        }
 
-
-            selectedFile = file;
-
-
-            /*
-            Preview image
-            */
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload =
-                function(event) {
-
-                    imagePreview.src =
-                        event.target.result;
-
-                    imagePreview.style.display =
-                        "block";
-
-                };
-
-
-            reader.readAsDataURL(file);
-
-
-            /*
-            Update filename
-            */
-
+        const filename =
             getGeneratedFilename();
 
+        if (!filename) {
+
+            showStatus(
+                "Please complete all product details.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        try {
+
+            uploadButton.disabled = true;
+
+            showStatus(
+                "Uploading image to Google Drive...",
+                "info"
+            );
+
+            const result =
+                await GoogleDriveUploader.uploadImage(
+                    selectedFile,
+                    filename
+                );
+
+            showStatus(
+                `Upload successful!<br><br>
+                 File: <strong>${result.name}</strong><br>
+                 Saved in your Log HARDWARE Images folder.`,
+                "success"
+            );
 
             /*
-            IMPORTANT:
-            Enable upload button immediately.
-            */
+             * Reset image.
+             */
+            selectedFile = null;
+
+            imageInput.value = "";
+            cameraInput.value = "";
+
+            imagePreview.src = "";
+            imagePreview.style.display = "none";
+
+            updateUploadButton();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showStatus(
+                error.message,
+                "error"
+            );
 
             updateUploadButton();
 
         }
 
-
-        /*
-        ------------------------------------------------------
-        IMAGE INPUT
-        ------------------------------------------------------
-        */
-
-        imageInput.addEventListener(
-            "change",
-            event => {
-
-                handleImage(
-                    event.target.files[0]
-                );
-
-            }
-        );
+    });
 
 
-        /*
-        ------------------------------------------------------
-        CAMERA INPUT
-        ------------------------------------------------------
-        */
+    function showStatus(message, type) {
 
-        cameraInput.addEventListener(
-            "change",
-            event => {
+        status.className = `status ${type}`;
+        status.innerHTML = message;
 
-                handleImage(
-                    event.target.files[0]
-                );
-
-            }
-        );
+    }
 
 
-        /*
-        ------------------------------------------------------
-        UPDATE UPLOAD BUTTON
-        ------------------------------------------------------
+    function updateDriveUI() {
 
-        IMPORTANT:
-        We do NOT check Google OAuth here.
+        if (GoogleDriveUploader.isSignedIn()) {
 
-        OAuth is checked when the user actually clicks
-        Upload to Google Drive.
+            driveStatus.textContent = "Connected";
+            driveStatus.style.color = "#047857";
 
-        This prevents the button from incorrectly remaining
-        disabled after Google authentication.
-        ------------------------------------------------------
-        */
+            loginButton.style.display = "none";
+            logoutButton.style.display = "block";
 
-        function updateUploadButton() {
+        } else {
 
-            const ready =
-                productName.value.trim() !== "" &&
-                category.value !== "" &&
-                brand.value !== "" &&
-                partNumber.value.trim() !== "" &&
-                selectedFile !== null;
+            driveStatus.textContent = "Not connected";
+            driveStatus.style.color = "";
 
-
-            uploadButton.disabled =
-                !ready;
-
-
-            if (ready) {
-
-                uploadButton.removeAttribute(
-                    "disabled"
-                );
-
-            } else {
-
-                uploadButton.setAttribute(
-                    "disabled",
-                    "disabled"
-                );
-
-            }
+            loginButton.style.display = "block";
+            logoutButton.style.display = "none";
 
         }
 
+    }
 
-        /*
-        ------------------------------------------------------
-        GOOGLE DRIVE LOGIN
-        ------------------------------------------------------
-        */
 
-        loginButton.addEventListener(
-            "click",
-            async () => {
+    /*
+     * Initialize.
+     */
+    window.addEventListener("load", () => {
 
-                try {
+        GoogleDriveUploader.init();
 
-                    showStatus(
-                        "Connecting to Google Drive...",
-                        "info"
-                    );
+        updateDriveUI();
 
+        updateUploadButton();
 
-                    await GoogleDriveUploader.signIn();
+    });
 
-
-                    updateDriveUI();
-
-
-                    updateUploadButton();
-
-
-                    showStatus(
-                        "Google Drive connected successfully.",
-                        "success"
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Google Drive login error:",
-                        error
-                    );
-
-
-                    showStatus(
-                        error.message ||
-                        "Google Drive connection failed.",
-                        "error"
-                    );
-
-                }
-
-            }
-        );
-
-
-        /*
-        ------------------------------------------------------
-        SIGN OUT
-        ------------------------------------------------------
-        */
-
-        logoutButton.addEventListener(
-            "click",
-            () => {
-
-                GoogleDriveUploader.signOut();
-
-
-                updateDriveUI();
-
-
-                updateUploadButton();
-
-
-                showStatus(
-                    "Google Drive disconnected.",
-                    "info"
-                );
-
-            }
-        );
-
-
-        /*
-        ------------------------------------------------------
-        UPLOAD
-        ------------------------------------------------------
-        */
-
-        uploadButton.addEventListener(
-            "click",
-            async () => {
-
-                /*
-                Check image
-                */
-
-                if (!selectedFile) {
-
-                    showStatus(
-                        "Please select or capture an image.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                /*
-                Check Google Drive
-                */
-
-                if (
-                    !window.GoogleDriveUploader ||
-                    !GoogleDriveUploader.isSignedIn()
-                ) {
-
-                    showStatus(
-                        "Please connect Google Drive first.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                /*
-                Generate filename
-                */
-
-                const filename =
-                    getGeneratedFilename();
-
-
-                if (!filename) {
-
-                    showStatus(
-                        "Please complete all product details.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                try {
-
-                    uploadButton.disabled =
-                        true;
-
-
-                    showStatus(
-                        "Uploading image to Google Drive...",
-                        "info"
-                    );
-
-
-                    const result =
-                        await GoogleDriveUploader.uploadImage(
-                            selectedFile,
-                            filename
-                        );
-
-
-                    /*
-                    Success
-                    */
-
-                    showStatus(
-                        `Upload successful!<br><br>
-                         File:
-                         <strong>${result.name}</strong><br>
-                         Saved in your Log HARDWARE Images folder.`,
-                        "success"
-                    );
-
-
-                    /*
-                    Reset image only
-                    */
-
-                    selectedFile = null;
-
-
-                    imageInput.value = "";
-
-                    cameraInput.value = "";
-
-
-                    imagePreview.src = "";
-
-                    imagePreview.style.display =
-                        "none";
-
-
-                    updateUploadButton();
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Upload error:",
-                        error
-                    );
-
-
-                    showStatus(
-                        error.message ||
-                        "Upload failed.",
-                        "error"
-                    );
-
-
-                    updateUploadButton();
-
-                }
-
-            }
-        );
-
-
-        /*
-        ------------------------------------------------------
-        STATUS MESSAGE
-        ------------------------------------------------------
-        */
-
-        function showStatus(
-            message,
-            type
-        ) {
-
-            status.className =
-                `status ${type}`;
-
-            status.innerHTML =
-                message;
-
-        }
-
-
-        /*
-        ------------------------------------------------------
-        GOOGLE DRIVE UI
-        ------------------------------------------------------
-        */
-
-        function updateDriveUI() {
-
-            if (
-                window.GoogleDriveUploader &&
-                GoogleDriveUploader.isSignedIn()
-            ) {
-
-                driveStatus.textContent =
-                    "Connected";
-
-                driveStatus.style.color =
-                    "#047857";
-
-
-                loginButton.style.display =
-                    "none";
-
-                logoutButton.style.display =
-                    "block";
-
-
-            } else {
-
-                driveStatus.textContent =
-                    "Not connected";
-
-                driveStatus.style.color =
-                    "";
-
-
-                loginButton.style.display =
-                    "block";
-
-                logoutButton.style.display =
-                    "none";
-
-            }
-
-        }
-
-
-        /*
-        ------------------------------------------------------
-        INITIALIZE
-        ------------------------------------------------------
-        */
-
-        window.addEventListener(
-            "load",
-            () => {
-
-                /*
-                Initialize Google Drive
-                */
-
-                GoogleDriveUploader.init();
-
-
-                /*
-                Update UI
-                */
-
-                updateDriveUI();
-
-
-                /*
-                Initially disable upload
-                until product details + image exist.
-                */
-
-                updateUploadButton();
-
-            }
-        );
-
-    </script>
+</script>
 
 </body>
-
 </html>
