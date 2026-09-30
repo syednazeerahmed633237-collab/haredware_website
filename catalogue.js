@@ -12,7 +12,7 @@
 
     // CHANGE THIS TO YOUR REAL WHATSAPP NUMBER
     // India example: 919876543210
-    const WHATSAPP_NUMBER = "919XXXXXXXXX";
+    const WHATSAPP_NUMBER = "919019193983";
 
     const CART_STORAGE_KEY = "logHardwareCart";
 
