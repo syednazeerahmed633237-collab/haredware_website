@@ -3,13 +3,9 @@
    Frontend-only version: HTML + CSS + JavaScript
 
    IMPORTANT:
-   - This file can contain a Google API key, but the key is
-     visible to website visitors.
-   - Restrict the key in Google Cloud Console to your domain
-     and to the Google Drive API.
-   - A frontend-only API key can access only files/folders
-     that are publicly readable. A private Drive folder needs
-     a backend or another authenticated service.
+   - Keep the API key restricted to your GitHub Pages origin.
+   - Restrict it to the Google Drive API.
+   - This connector reads image files from the configured folder.
    ========================================================= */
 
 const GOOGLE_DRIVE_CONFIG = {
@@ -17,8 +13,11 @@ const GOOGLE_DRIVE_CONFIG = {
   FOLDER_ID: '1bKz5OdLYc6XTXeT-9FjgA8iceKlKyWAZ'
 };
 
-const GOOGLE_DRIVE_FILES_API = 'https://www.googleapis.com/drive/v3/files';
-const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail';
+const GOOGLE_DRIVE_FILES_API =
+  'https://www.googleapis.com/drive/v3/files';
+
+const GOOGLE_DRIVE_THUMBNAIL_URL =
+  'https://drive.google.com/thumbnail';
 
 function normalizeDriveValue(value) {
   return String(value || '')
@@ -31,32 +30,31 @@ function parseGoogleDriveFilename(filename) {
   if (!filename) return null;
 
   const name = filename.replace(/\.[^/.]+$/, '');
-  const match = name.match(/^(.+?)-C-(.+?)-B-(.+?)-S-(.+)$/i);
+  const match = name.match(/^(.+?)-C-(.+?)-B-(.+?)-S-(.+?)-CO-(.+)$/i);
 
-  if (!match) {
-    return null;
-  }
+  if (!match) return null;
 
   return {
     filename,
     product: normalizeDriveValue(match[1]),
     category: normalizeDriveValue(match[2]),
     brand: normalizeDriveValue(match[3]),
-    size: String(match[4] || '').trim()
+    size: String(match[4] || '').trim(),
+        partNumber: String(match[4] || '').trim(),
+        coCode: String(match[5] || '').trim()
   };
 }
 
 function getGoogleDriveImageUrl(fileId) {
   if (!fileId) return '';
-
   return `${GOOGLE_DRIVE_THUMBNAIL_URL}?id=${encodeURIComponent(fileId)}&sz=w1600`;
 }
 
 async function getGoogleDriveImages() {
   const { API_KEY, FOLDER_ID } = GOOGLE_DRIVE_CONFIG;
 
-  if (!API_KEY || API_KEY === 'PASTE_YOUR_GOOGLE_API_KEY_HERE') {
-    console.warn('Google Drive API key is not configured. Local images will be used.');
+  if (!API_KEY || API_KEY === 'PASTE_YOUR_RESTRICTED_GOOGLE_API_KEY_HERE') {
+    console.warn('Google Drive API key is not configured.');
     return [];
   }
 
@@ -78,11 +76,10 @@ async function getGoogleDriveImages() {
         key: API_KEY
       });
 
-      if (pageToken) {
-        params.set('pageToken', pageToken);
-      }
+      if (pageToken) params.set('pageToken', pageToken);
 
-      const response = await fetch(`${GOOGLE_DRIVE_FILES_API}?${params.toString()}`);
+      const response =
+        await fetch(`${GOOGLE_DRIVE_FILES_API}?${params.toString()}`);
 
       if (!response.ok) {
         let message = `Google Drive API returned ${response.status}.`;
@@ -120,62 +117,42 @@ function buildGoogleDriveImageIndex(files) {
       category: parsed.category,
       brand: parsed.brand,
       size: parsed.size,
+            partNumber: parsed.partNumber,
+            coCode: parsed.coCode,
       mimeType: file.mimeType || '',
       modifiedTime: file.modifiedTime || ''
     };
 
-    if (!index[parsed.product]) {
-      index[parsed.product] = [];
-    }
-
+    if (!index[parsed.product]) index[parsed.product] = [];
     index[parsed.product].push(item);
   });
 
   return index;
 }
 
-function findDriveImagesForProduct(product, imageIndex) {
-  if (!product || !imageIndex) return [];
-
-  const key = normalizeDriveValue(product.id);
-  const candidates = imageIndex[key] || [];
-
-  if (!candidates.length) return [];
-
-  const productCategory = normalizeDriveValue(product.category);
-  const productBrand = normalizeDriveValue(product.brand);
-
-  return candidates.filter(item => {
-    const categoryMatches = !item.category ||
-      item.category === productCategory ||
-      item.category.replace(/-/g, '') === productCategory.replace(/-/g, '');
-
-    const brandMatches = !item.brand ||
-      item.brand === productBrand ||
-      item.brand.replace(/-/g, '') === productBrand.replace(/-/g, '');
-
-    return categoryMatches && brandMatches;
-  });
-}
-
-function applyDriveImagesToProducts(products, imageIndex) {
-  if (!Array.isArray(products)) return;
-
-  products.forEach(product => {
-    const images = findDriveImagesForProduct(product, imageIndex);
-
-    if (!images.length) return;
-
-    // Keep the first matching image as the default catalogue image.
-    product.driveImages = images;
-    product.image = images[0].image;
-  });
+async function getGoogleDrivePartIndex() {
+  const files = await getGoogleDriveImages();
+  return buildGoogleDriveImageIndex(files);
 }
 
 async function loadGoogleDriveImagesIntoProducts(products) {
-  const files = await getGoogleDriveImages();
-  const imageIndex = buildGoogleDriveImageIndex(files);
-  applyDriveImagesToProducts(products, imageIndex);
+  const index = await getGoogleDrivePartIndex();
 
-  return imageIndex;
+  if (!Array.isArray(products)) return index;
+
+  products.forEach(product => {
+    const images = index[normalizeDriveValue(product.id)] || [];
+    product.driveImages = images;
+    if (images[0]) product.image = images[0].image;
+  });
+
+  return index;
 }
+
+window.GoogleDriveConnector = {
+  getGoogleDriveImages,
+  buildGoogleDriveImageIndex,
+  getGoogleDrivePartIndex,
+  loadGoogleDriveImagesIntoProducts,
+  parseGoogleDriveFilename
+};
