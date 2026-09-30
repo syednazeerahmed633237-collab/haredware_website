@@ -31,6 +31,39 @@
     return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
 
+  function driveImageUrl(fileId) {
+    return fileId ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(fileId) + '&sz=w1600' : '';
+  }
+
+  function parseFilename(filename) {
+    if (!filename) return null;
+    const name = String(filename).replace(/\.[^/.]+$/, '');
+    let m = name.match(/^(.+?)-C-(.+?)-B-(.+?)-S-(.+?)-CO-(.+)$/i);
+    if (m) {
+      return {
+        product: slug(m[1]),
+        category: slug(m[2]),
+        brand: slug(m[3]),
+        partNumber: String(m[4] || '').trim(),
+        coCode: String(m[5] || '').trim()
+      };
+    }
+    // Backward-compatible format used by some existing Drive files:
+    // product-C-category-B-brand-S-partNumber.ext
+    m = name.match(/^(.+?)-C-(.+?)-B-(.+?)-S-(.+)$/i);
+    if (m) {
+      return {
+        product: slug(m[1]),
+        category: slug(m[2]),
+        brand: slug(m[3]),
+        partNumber: String(m[4] || '').trim(),
+        coCode: ''
+      };
+    }
+    console.warn('Skipped file with invalid filename:', filename);
+    return null;
+  }
+
   function urlParams() { return new URLSearchParams(location.search); }
 
   function setHeader() {
@@ -146,7 +179,7 @@
       const files = await window.GoogleDriveConnector.getGoogleDriveImages();
       console.log('Google Drive files:', files);
       allProducts = files.map(file => {
-        const parsed = window.GoogleDriveConnector.parseGoogleDriveFilename(file.name);
+        const parsed = parseFilename(file.name);
         if (!parsed) return null;
         return {
           id: file.id,
@@ -157,7 +190,7 @@
           brand: parsed.brand,
           partNumber: parsed.partNumber,
           coCode: parsed.coCode,
-          image: window.GoogleDriveConnector.getGoogleDriveImageUrl(file.id)
+          image: driveImageUrl(file.id)
         };
       }).filter(Boolean);
 
