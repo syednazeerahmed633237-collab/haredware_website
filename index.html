@@ -95,6 +95,42 @@
       </div>
     </section>
 
+    <!-- Categories Section: 2 Columns on Mobile -->
+    <section id="categories" class="category-section" aria-label="Appliance categories">
+      <div class="section-head">
+        <span class="eyebrow">BROWSE BY APPLIANCE</span>
+        <h2>Shop by Category</h2>
+        <p>Select an appliance to filter spare parts available in Google Drive.</p>
+      </div>
+
+      <div class="category-grid">
+        <button class="category-card" type="button" data-category="General Tools" onclick="chooseCategory('General Tools')">
+          <span class="category-icon" aria-hidden="true">🧰</span>
+          <span class="category-name">General Tools</span>
+        </button>
+        <button class="category-card" type="button" data-category="Washing Machine" onclick="chooseCategory('Washing Machine')">
+          <span class="category-icon" aria-hidden="true">🌀</span>
+          <span class="category-name">Washing Machine</span>
+        </button>
+        <button class="category-card" type="button" data-category="Refrigerator" onclick="chooseCategory('Refrigerator')">
+          <span class="category-icon" aria-hidden="true">❄️</span>
+          <span class="category-name">Refrigerator</span>
+        </button>
+        <button class="category-card" type="button" data-category="Water Purifier" onclick="chooseCategory('Water Purifier')">
+          <span class="category-icon" aria-hidden="true">💧</span>
+          <span class="category-name">Water Purifier</span>
+        </button>
+        <button class="category-card" type="button" data-category="Microwave" onclick="chooseCategory('Microwave')">
+          <span class="category-icon" aria-hidden="true">📻</span>
+          <span class="category-name">Microwave</span>
+        </button>
+        <button class="category-card" type="button" data-category="AC Parts" onclick="chooseCategory('AC Parts')">
+          <span class="category-icon" aria-hidden="true">❄️</span>
+          <span class="category-name">AC Parts</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Brands Strip -->
     <section class="brand-strip" aria-label="Brands we stock">
       <div class="brand-strip-container">
@@ -283,6 +319,7 @@
   </footer>
 
   <!-- JavaScript -->
+  <script src="navigation.js"></script>
   <script src="google_drive.js"></script>
   <script src="app.js"></script>
   <script src="catalogue.js"></script>
