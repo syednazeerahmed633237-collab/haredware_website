@@ -4,175 +4,142 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Spare Part Details - LOG HARDWARE</title>
-  <meta name="description" content="View specifications, genuine manufacturer details, price, and instant WhatsApp ordering for hardware and appliance spare parts from LOG HARDWARE, Faizan B Hardware, KGF.">
+  <meta name="description" content="LOG HARDWARE Google Drive spare parts catalogue.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Sticky Mobile-First Header: LOG HARDWARE | Menu | Cart -->
-  <header class="topbar">
-    <div class="topbar-container">
-      <div class="brand-wrapper">
-        <a class="site-name" href="index.html" aria-label="LOG HARDWARE Home">
-          <span class="logo-accent">LOG</span>
-          <span class="logo-sub">HARDWARE</span>
-        </a>
-      </div>
-
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
-        <span class="hamburger-icon" aria-hidden="true">☰</span>
-        <span class="menu-label">Menu</span>
-      </button>
-
-      <!-- Desktop Nav -->
-      <nav class="topbar-nav" aria-label="Primary navigation">
-        <a href="index.html#home">Home</a>
-        <a href="index.html#categories">Categories</a>
-        <a href="index.html#products-section" class="active">Products</a>
-        <a href="index.html#store">Store / Contact</a>
-      </nav>
-
-      <!-- Cart Button -->
-      <div class="header-actions">
-        <button class="cart-button" id="openCart" type="button" aria-label="View shopping cart">
-          <span>Cart</span>
-          <span class="cart-count-badge" id="cartCount">0</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Mobile Navigation Drawer -->
-  <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
-    <div class="mobile-nav-head">
-      <div class="site-name">
+<header class="topbar">
+  <div class="topbar-container">
+    <div class="brand-wrapper">
+      <a class="site-name" href="index.html" aria-label="LOG HARDWARE Home">
         <span class="logo-accent">LOG</span>
         <span class="logo-sub">HARDWARE</span>
-      </div>
-      <button id="closeMobileNav" class="icon-button" type="button" aria-label="Close navigation menu">×</button>
+      </a>
     </div>
-    <div class="mobile-nav-links">
+
+    <button class="menu-toggle" id="menuToggle" type="button"
+            aria-label="Open navigation menu" aria-expanded="false">
+      <span class="hamburger-icon" aria-hidden="true">☰</span>
+      <span class="menu-label">Menu</span>
+    </button>
+
+    <nav class="topbar-nav" aria-label="Primary navigation">
       <a href="index.html#home">Home</a>
       <a href="index.html#categories">Categories</a>
-      <a href="index.html#products-section">Products</a>
-      <a href="index.html#store">Store</a>
-      <a href="index.html#store">Contact</a>
-      <a href="javascript:void(0)" onclick="openStoreWhatsApp();" class="whatsapp-nav">💬 Chat on WhatsApp</a>
+      <a href="index.html#products-section" class="active">Products</a>
+      <a href="index.html#store">Store / Contact</a>
+    </nav>
+  </div>
+</header>
+
+<nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mobile-nav-head">
+    <div class="site-name">
+      <span class="logo-accent">LOG</span>
+      <span class="logo-sub">HARDWARE</span>
     </div>
-    <div class="mobile-nav-footer">
-      <p><strong>Faizan B Hardware</strong><br>KGF, Karnataka<br>Mon – Sat: 9:00 AM – 8:00 PM</p>
+    <button id="closeMobileNav" class="icon-button" type="button"
+            aria-label="Close navigation menu">×</button>
+  </div>
+
+  <div class="mobile-nav-links">
+    <a href="index.html#home">Home</a>
+    <a href="index.html#categories">Categories</a>
+    <a href="index.html#products-section">Products</a>
+    <a href="index.html#store">Store</a>
+    <a href="index.html#store">Contact</a>
+    <a href="javascript:void(0)" onclick="openStoreWhatsApp()" class="whatsapp-nav">
+      💬 Chat on WhatsApp
+    </a>
+  </div>
+
+  <div class="mobile-nav-footer">
+    <p><strong>Faizan B Hardware</strong><br>
+      KGF, Karnataka<br>
+      Mon – Sat: 9:00 AM – 8:00 PM
+    </p>
+  </div>
+</nav>
+
+<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+
+<main>
+  <a class="back-link" href="index.html#products-section">
+    ← Back to catalogue
+  </a>
+
+  <section id="productDetail"
+           class="product-detail-layout"
+           aria-live="polite">
+    <div class="detail-not-found">
+      <h2>Loading spare part details...</h2>
     </div>
-  </nav>
-  <div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+  </section>
+</main>
 
-  <main>
-    <a class="back-link" href="index.html#products-section">← Back to catalogue</a>
-    
-    <!-- Dynamically populated by detail() in app.js -->
-    <section id="productDetail" class="product-detail-layout" aria-live="polite">
-      <div class="detail-not-found">
-        <h2>Loading spare part details...</h2>
-      </div>
-    </section>
-  </main>
-
-  <!-- Responsive Footer: 2 Columns on Mobile -->
-  <footer class="site-footer">
-    <div class="footer-top">
-      <div class="footer-brand-col">
-        <a class="footer-logo" href="index.html">
-          <span class="logo-accent">LOG</span> HARDWARE
-        </a>
-        <p class="footer-desc">
-          Authorized supplier of genuine heating, ventilation, air conditioning, and domestic appliance spares. Operating out of KGF, Karnataka.
-        </p>
-        <p class="footer-desc">
-          <strong>Store:</strong> Faizan B Hardware, KGF, Karnataka
-        </p>
-      </div>
-
-      <div class="footer-col">
-        <div class="footer-heading">Products</div>
-        <a onclick="chooseCategory('General Tools')">General Tools</a>
-        <a onclick="chooseCategory('Washing Machine')">Washing Machine</a>
-        <a onclick="chooseCategory('Refrigerator')">Refrigerator</a>
-        <a onclick="chooseCategory('Water Purifier')">Water Purifier</a>
-        <a onclick="chooseCategory('Microwave')">Microwave</a>
-        <a onclick="chooseCategory('AC Parts')">AC Parts</a>
-      </div>
-
-      <div class="footer-col">
-        <div class="footer-heading">Brands</div>
-        <a onclick="chooseBrand('LG')">LG</a>
-        <a onclick="chooseBrand('Samsung')">Samsung</a>
-        <a onclick="chooseBrand('Daikin')">Daikin</a>
-        <a onclick="chooseBrand('Voltas')">Voltas</a>
-        <a onclick="chooseBrand('Whirlpool')">Whirlpool</a>
-        <a onclick="chooseBrand('Schneider')">Schneider</a>
-      </div>
-
-      <div class="footer-col">
-        <div class="footer-heading">Company</div>
-        <a href="index.html#store">About Us</a>
-        <a href="index.html#store">Store Counter</a>
-        <a href="javascript:void(0)" onclick="openStoreWhatsApp()">Contact Support</a>
-        <a href="index.html#categories">Browse Catalogue</a>
-      </div>
-
-      <div class="footer-col">
-        <div class="footer-heading">Support &amp; Legal</div>
-        <a href="javascript:void(0)" onclick="openStoreWhatsApp()">Help Center (WhatsApp)</a>
-        <a href="index.html#store">Return Policy (7-Day Guarantee)</a>
-        <a href="index.html#store">Shipping &amp; Delivery</a>
-        <a href="index.html#store">Privacy Policy</a>
-        <a href="index.html#store">Terms of Service</a>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <div class="footer-bottom-inner">
-        <span>© 2026 LOG HARDWARE · Faizan B Hardware, KGF, Karnataka. All rights reserved.</span>
-        <span>Genuine Indian Appliance &amp; Hardware Spare Parts</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Shopping Cart Slide-over Panel -->
-  <aside id="cartPanel" class="cart-panel" aria-label="Shopping cart" aria-hidden="true">
-    <div class="cart-head">
-      <h2>Your Parts Order List</h2>
-      <button class="icon-button" data-close-cart type="button" aria-label="Close cart">×</button>
-    </div>
-
-    <div id="cartItems" class="cart-items">
-      <!-- Populated by renderCart() in app.js -->
-    </div>
-
-    <div class="cart-foot">
-      <div class="cart-summary-box">
-        <div class="cart-summary-row">
-          <span>Total Parts:</span>
-          <strong id="cartTotal">0</strong>
-        </div>
-        <div class="cart-summary-row total-row">
-          <span>Estimated Total:</span>
-          <strong id="cartAmount">₹0</strong>
-        </div>
-      </div>
-      <button id="sendCart" class="send-order-btn" type="button">
-        💬 Send Complete Order on WhatsApp
-      </button>
-      <p class="cart-foot-note">
-        Your enquiry will automatically include part names, brands, chosen sizes, SKUs, and quantities for instant confirmation.
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-brand-col">
+      <a class="footer-logo" href="index.html">
+        <span class="logo-accent">LOG</span> HARDWARE
+      </a>
+      <p class="footer-desc">
+        Genuine appliance and hardware spare parts catalogue powered by
+        the LOG HARDWARE Google Drive image library.
+      </p>
+      <p class="footer-desc">
+        <strong>Store:</strong> Faizan B Hardware, KGF, Karnataka
       </p>
     </div>
-  </aside>
 
-  <!-- Cart Backdrop Overlay -->
-  <div id="cartOverlay" class="cart-overlay" data-close-cart aria-hidden="true"></div>
+    <div class="footer-col">
+      <div class="footer-heading">Products</div>
+      <a onclick="chooseCategory('General Tools')">General Tools</a>
+      <a onclick="chooseCategory('Washing Machine')">Washing Machine</a>
+      <a onclick="chooseCategory('Refrigerator')">Refrigerator</a>
+      <a onclick="chooseCategory('Water Purifier')">Water Purifier</a>
+      <a onclick="chooseCategory('Microwave')">Microwave</a>
+      <a onclick="chooseCategory('AC Parts')">AC Parts</a>
+    </div>
 
-  <!-- JavaScript -->
-  <script src="google_drive.js"></script>
-  <script src="app.js"></script>
+    <div class="footer-col">
+      <div class="footer-heading">Brands</div>
+      <a onclick="chooseBrand('LG')">LG</a>
+      <a onclick="chooseBrand('Samsung')">Samsung</a>
+      <a onclick="chooseBrand('Daikin')">Daikin</a>
+      <a onclick="chooseBrand('Voltas')">Voltas</a>
+      <a onclick="chooseBrand('Whirlpool')">Whirlpool</a>
+      <a onclick="chooseBrand('Schneider')">Schneider</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-heading">Company</div>
+      <a href="index.html#store">About Us</a>
+      <a href="index.html#store">Store Counter</a>
+      <a href="javascript:void(0)" onclick="openStoreWhatsApp()">Contact Support</a>
+      <a href="index.html#categories">Browse Catalogue</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-heading">Support &amp; Legal</div>
+      <a href="javascript:void(0)" onclick="openStoreWhatsApp()">Help Center (WhatsApp)</a>
+      <a href="index.html#store">Return Policy</a>
+      <a href="index.html#store">Shipping &amp; Delivery</a>
+      <a href="index.html#store">Privacy Policy</a>
+      <a href="index.html#store">Terms of Service</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span>© 2026 LOG HARDWARE · Faizan B Hardware, KGF, Karnataka. All rights reserved.</span>
+      <span>Genuine Indian Appliance &amp; Hardware Spare Parts</span>
+    </div>
+  </div>
+</footer>
+
+<script src="google_drive.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
