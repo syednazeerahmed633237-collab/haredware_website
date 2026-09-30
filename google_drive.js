@@ -23,7 +23,7 @@ function normalizeDriveValue(value) {
   return String(value || '')
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, '-');
+    .replace(/[_\s]+/g, '-');
 }
 
 function parseGoogleDriveFilename(filename) {
@@ -154,5 +154,6 @@ window.GoogleDriveConnector = {
   buildGoogleDriveImageIndex,
   getGoogleDrivePartIndex,
   loadGoogleDriveImagesIntoProducts,
-  parseGoogleDriveFilename
+  parseGoogleDriveFilename,
+  getGoogleDriveImageUrl
 };
