@@ -669,41 +669,7 @@
                 + Add Product
             </button>
         </div>
-
-        <div id="productsContainer"></div>
-
-        <div class="batch-actions">
-            <button
-                type="button"
-                class="upload-button"
-                id="uploadAllButton"
-                disabled>
-                Upload All to Google Drive
-            </button>
-
-            <button
-                type="button"
-                class="secondary-button"
-                id="resetButton">
-                Reset All
-            </button>
-        </div>
-
-        <div id="batchStatus" class="status"></div>
-
-        <!-- CONNECT DRIVE -->
-        <button
-            type="button"
-            class="login-button"
-            id="loginButton">
-            Connect Google Drive
-        </button>
-
-    </div>
-
-</div>
-
-<!-- GOOGLE IDENTITY SERVICES -->
+        <!-- GOOGLE IDENTITY SERVICES -->
 
     <!-- GOOGLE DRIVE CONNECT MODAL -->
     <div class="modal-overlay" id="driveConnectModal" aria-hidden="true" inert>
@@ -753,10 +719,43 @@
 
         </div>
     </div>
-
+        
 <script src="https://accounts.google.com/gsi/client"></script>
 
 <script src="google_drive_upload.js"></script>
+
+        <div id="productsContainer"></div>
+
+        <div class="batch-actions">
+            <button
+                type="button"
+                class="upload-button"
+                id="uploadAllButton"
+                disabled>
+                Upload All to Google Drive
+            </button>
+
+            <button
+                type="button"
+                class="secondary-button"
+                id="resetButton">
+                Reset All
+            </button>
+        </div>
+
+        <div id="batchStatus" class="status"></div>
+
+        <!-- CONNECT DRIVE -->
+        <button
+            type="button"
+            class="login-button"
+            id="loginButton">
+            Connect Google Drive
+        </button>
+
+    </div>
+
+</div>
 
 <script>
 
