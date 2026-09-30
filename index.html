@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LOG HARDWARE - Hardware &amp; Appliance Spare Parts Catalogue</title>
+  <meta name="description" content="Shop genuine Indian hardware and appliance spare parts from Faizan B Hardware, KGF, Karnataka. Instant WhatsApp order enquiry, verified fitment and fast dispatch.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Sticky Mobile-First Header: LOG HARDWARE | Menu | Cart -->
+  <header class="topbar">
+    <div class="topbar-container">
+      <div class="brand-wrapper">
+        <a class="site-name" href="index.html" aria-label="LOG HARDWARE Home">
+          <span class="logo-accent">LOG</span>
+          <span class="logo-sub">HARDWARE</span>
+        </a>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
+        <span class="hamburger-icon" aria-hidden="true">☰</span>
+        <span class="menu-label">Menu</span>
+      </button>
+
+      <!-- Desktop Nav -->
+      <nav class="topbar-nav" aria-label="Primary navigation">
+        <a href="#home" class="active">Home</a>
+        <a href="#categories">Categories</a>
+        <a href="#products-section">Products</a>
+        <a href="#store">Store / Contact</a>
+      </nav>
+
+      <!-- Cart Button -->
+      <div class="header-actions">
+        <button class="cart-button" id="openCart" type="button" aria-label="View shopping cart">
+          <span>Cart</span>
+          <span class="cart-count-badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
+    <div class="mobile-nav-head">
+      <div class="site-name">
+        <span class="logo-accent">LOG</span>
+        <span class="logo-sub">HARDWARE</span>
+      </div>
+      <button id="closeMobileNav" class="icon-button" type="button" aria-label="Close navigation menu">×</button>
+    </div>
+    <div class="mobile-nav-links">
+      <a href="#home">Home</a>
+      <a href="#categories">Categories</a>
+      <a href="#products-section">Products</a>
+      <a href="#store">Store</a>
+      <a href="#store">Contact</a>
+      <a href="javascript:void(0)" onclick="openStoreWhatsApp();" class="whatsapp-nav">💬 Chat on WhatsApp</a>
+    </div>
+    <div class="mobile-nav-footer">
+      <p><strong>Faizan B Hardware</strong><br>KGF, Karnataka<br>Mon – Sat: 9:00 AM – 8:00 PM</p>
+    </div>
+  </nav>
+  <div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+
+  <main>
+    <!-- Hero Section: Redesigned Specifically for Mobile First -->
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">HARDWARE &amp; APPLIANCE SPARES</span>
+        <h1>Need a Spare Part?<br>We’ll Help You Find It.</h1>
+        <p class="hero-description">
+          Search by appliance category, brand, or SKU code to locate genuine replacement parts for ACs, washing machines, refrigerators, and more. Send your requirement directly on WhatsApp for immediate availability and dispatch.
+        </p>
+        <div class="hero-cta-group">
+          <a class="hero-primary-btn" href="#products-section">Browse Spare Parts →</a>
+          <button class="hero-secondary-btn" type="button" onclick="openStoreWhatsApp()">💬 WhatsApp Support</button>
+        </div>
+      </div>
+
+      <!-- Authentic Hardware Store Feature Box -->
+      <div class="hero-visual" aria-label="Store highlights">
+        <div class="hero-badge-top">
+          <span class="status-pill">Ready to Dispatch</span>
+          <span class="hero-counter">500+ Spares In Stock</span>
+        </div>
+        <div class="hero-feature-grid">
+          <div class="feature-box">
+            <div class="feature-box-icon">🔧</div>
+            <h3 class="feature-box-title">Genuine OEM Parts</h3>
+            <p class="feature-box-desc">Sourced directly from verified manufacturers.</p>
+          </div>
+          <div class="feature-box">
+            <div class="feature-box-icon">⚡</div>
+            <h3 class="feature-box-title">Quick Verification</h3>
+            <p class="feature-box-desc">Send part photos on WhatsApp for exact fitment.</p>
+          </div>
+        </div>
+        <div class="hero-store-bar">
+          <span>Serving technicians &amp; homeowners in <strong>KGF &amp; across Karnataka</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Section: 2 Columns on Mobile -->
+    <section id="categories" class="category-section" aria-label="Appliance categories">
+      <div class="section-head">
+        <span class="eyebrow">BROWSE BY APPLIANCE</span>
+        <h2>Shop by Category</h2>
+        <p>Select an appliance to filter compatible spare parts.</p>
+      </div>
+
+      <div class="category-grid">
+        <button class="category-card" type="button" data-category="General Tools" onclick="chooseCategory('General Tools')">
+          <span class="category-icon" aria-hidden="true">🧰</span>
+          <span class="category-name">General Tools</span>
+        </button>
+        <button class="category-card" type="button" data-category="Washing Machine" onclick="chooseCategory('Washing Machine')">
+          <span class="category-icon" aria-hidden="true">🌀</span>
+          <span class="category-name">Washing Machine</span>
+        </button>
+        <button class="category-card" type="button" data-category="Refrigerator" onclick="chooseCategory('Refrigerator')">
+          <span class="category-icon" aria-hidden="true">❄️</span>
+          <span class="category-name">Refrigerator</span>
+        </button>
+        <button class="category-card" type="button" data-category="Water Purifier" onclick="chooseCategory('Water Purifier')">
+          <span class="category-icon" aria-hidden="true">💧</span>
+          <span class="category-name">Water Purifier</span>
+        </button>
+        <button class="category-card" type="button" data-category="Microwave" onclick="chooseCategory('Microwave')">
+          <span class="category-icon" aria-hidden="true">📻</span>
+          <span class="category-name">Microwave</span>
+        </button>
+        <button class="category-card" type="button" data-category="AC Parts" onclick="chooseCategory('AC Parts')">
+          <span class="category-icon" aria-hidden="true">❄️</span>
+          <span class="category-name">AC Parts</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Brands Strip -->
+    <section class="brand-strip" aria-label="Brands we stock">
+      <div class="brand-strip-container">
+        <p class="brand-strip-label">POPULAR SPARE BRANDS</p>
+      </div>
+      <div class="brand-track-wrapper">
+        <div class="brand-track">
+          <span class="brand-pill" onclick="chooseBrand('LG')">LG</span>
+          <span class="brand-pill" onclick="chooseBrand('Samsung')">SAMSUNG</span>
+          <span class="brand-pill" onclick="chooseBrand('Daikin')">DAIKIN</span>
+          <span class="brand-pill" onclick="chooseBrand('Voltas')">VOLTAS</span>
+          <span class="brand-pill" onclick="chooseBrand('Whirlpool')">WHIRLPOOL</span>
+          <span class="brand-pill" onclick="chooseBrand('Carrier')">CARRIER</span>
+          <span class="brand-pill" onclick="chooseBrand('Crompton')">CROMPTON</span>
+          <span class="brand-pill" onclick="chooseBrand('Schneider')">SCHNEIDER</span>
+          <span class="brand-pill" onclick="chooseBrand('Honeywell')">HONEYWELL</span>
+          <span class="brand-pill" onclick="chooseBrand('Taparia')">TAPARIA</span>
+          <span class="brand-pill" onclick="chooseBrand('Kent')">KENT</span>
+          <span class="brand-pill" onclick="chooseBrand('Supreme')">SUPREME</span>
+          <span class="brand-pill" onclick="chooseBrand('Mandev')">MANDEV</span>
+          <span class="brand-pill" onclick="chooseBrand('3M')">3M</span>
+          <!-- Duplicate for seamless marquee -->
+          <span class="brand-pill" onclick="chooseBrand('LG')">LG</span>
+          <span class="brand-pill" onclick="chooseBrand('Samsung')">SAMSUNG</span>
+          <span class="brand-pill" onclick="chooseBrand('Daikin')">DAIKIN</span>
+          <span class="brand-pill" onclick="chooseBrand('Voltas')">VOLTAS</span>
+          <span class="brand-pill" onclick="chooseBrand('Whirlpool')">WHIRLPOOL</span>
+          <span class="brand-pill" onclick="chooseBrand('Carrier')">CARRIER</span>
+          <span class="brand-pill" onclick="chooseBrand('Crompton')">CROMPTON</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters Section: Mobile Order (Search -> Category|Brand -> Size -> Clear) -->
+    <section class="filter-section" aria-label="Search and filter spare parts">
+      <div class="section-head">
+        <span class="eyebrow">FIND YOUR PART</span>
+        <h2>Filter Spare Parts</h2>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-group filter-group-search">
+            <label class="filter-label" for="searchFilter">Search</label>
+            <input id="searchFilter" class="filter-input" type="search" placeholder="Part name, SKU, brand, model...">
+          </div>
+
+          <div class="filter-group filter-group-category">
+            <label class="filter-label" for="categoryFilter">Category</label>
+            <select id="categoryFilter" class="filter-select">
+              <option value="All">All Categories</option>
+            </select>
+          </div>
+
+          <div class="filter-group filter-group-brand">
+            <label class="filter-label" for="brandFilter">Brand</label>
+            <select id="brandFilter" class="filter-select">
+              <option value="All">All Brands</option>
+            </select>
+          </div>
+
+          <div class="filter-group filter-group-size">
+            <label class="filter-label" for="sizeFilter">Size / Model</label>
+            <select id="sizeFilter" class="filter-select">
+              <option value="All">All Sizes</option>
+            </select>
+          </div>
+
+          <button class="filter-clear-btn" id="clearFilters" type="button">Clear Filters</button>
+        </div>
+      </div>
+
+      <div class="catalogue-status-bar">
+        <p class="product-count-text">
+          Showing <strong id="productCount">20 products</strong>. Select your size variant, choose quantity and add to cart.
+        </p>
+      </div>
+
+      <!-- Products Grid -->
+      <section id="products-section" class="products-container">
+        <div id="productGrid" class="product-grid" aria-live="polite">
+          <!-- Dynamically populated by catalogue() in app.js -->
+        </div>
+      </section>
+    </section>
+
+    <!-- Store / Contact Section: Stacked Vertically on Mobile -->
+    <section id="store" class="store-section" aria-label="Store contact and location">
+      <div class="section-head">
+        <span class="eyebrow">STORE LOCATION &amp; CONTACT</span>
+        <h2>Faizan B Hardware</h2>
+        <p>Visit our counter or contact us directly on WhatsApp for parts availability.</p>
+      </div>
+
+      <div class="store-wrapper">
+        <div class="store-map-container">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17314973.955702417!2d82.75252935!3d21.0680074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30635ff06b92b791%3A0xd78c4fa1854213a6!2sIndia!5e1!3m2!1sen!2sin!4v1790682501998!5m2!1sen!2sin" 
+            title="Faizan B Hardware location map"
+            loading="lazy" 
+            referrerpolicy="strict-origin-when-cross-origin">
+          </iframe>
+        </div>
+
+        <div class="store-info-panel">
+          <span class="store-location-badge">📍 KGF, Karnataka</span>
+          <h3>Faizan B Hardware</h3>
+          <p class="store-details-text">
+            Specialized distributor and retailer of domestic &amp; commercial HVAC, refrigeration, washing machine, and appliance spare parts.
+          </p>
+          <div class="store-hours">
+            <span><strong>Store Hours:</strong></span>
+            <span>Monday – Saturday: 9:00 AM – 8:00 PM</span>
+            <span>Sunday: On-call emergency technician dispatch</span>
+          </div>
+          <button class="store-wa-action" type="button" onclick="openStoreWhatsApp()">
+            💬 Chat on WhatsApp
+          </button>
+        </div>
+
+        <div class="store-highlight-panel">
+          <span class="eyebrow" style="color: var(--amber);">SERVICE PROMISE</span>
+          <h4>Genuine Parts &amp; Quick Verification</h4>
+          <p>
+            Not sure about the exact model number? Simply send a photo of your faulty part or appliance rating label on WhatsApp.
+          </p>
+          <div class="store-checklist">
+            <div class="store-checklist-item"><span>✓</span> Counter pickup available in KGF</div>
+            <div class="store-checklist-item"><span>✓</span> Same-day dispatch across Karnataka</div>
+            <div class="store-checklist-item"><span>✓</span> Bulk technician wholesale pricing</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Responsive Footer: 2 Columns on Mobile -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand-col">
+        <a class="footer-logo" href="index.html">
+          <span class="logo-accent">LOG</span> HARDWARE
+        </a>
+        <p class="footer-desc">
+          Authorized supplier of genuine heating, ventilation, air conditioning, and domestic appliance spares. Operating out of KGF, Karnataka.
+        </p>
+        <p class="footer-desc">
+          <strong>Store:</strong> Faizan B Hardware, KGF, Karnataka
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-heading">Products</div>
+        <a onclick="chooseCategory('General Tools')">General Tools</a>
+        <a onclick="chooseCategory('Washing Machine')">Washing Machine</a>
+        <a onclick="chooseCategory('Refrigerator')">Refrigerator</a>
+        <a onclick="chooseCategory('Water Purifier')">Water Purifier</a>
+        <a onclick="chooseCategory('Microwave')">Microwave</a>
+        <a onclick="chooseCategory('AC Parts')">AC Parts</a>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-heading">Brands</div>
+        <a onclick="chooseBrand('LG')">LG</a>
+        <a onclick="chooseBrand('Samsung')">Samsung</a>
+        <a onclick="chooseBrand('Daikin')">Daikin</a>
+        <a onclick="chooseBrand('Voltas')">Voltas</a>
+        <a onclick="chooseBrand('Whirlpool')">Whirlpool</a>
+        <a onclick="chooseBrand('Schneider')">Schneider</a>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-heading">Company</div>
+        <a href="#store">About Us</a>
+        <a href="#store">Store Counter</a>
+        <a href="javascript:void(0)" onclick="openStoreWhatsApp()">Contact Support</a>
+        <a href="#categories">Browse Catalogue</a>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-heading">Support &amp; Legal</div>
+        <a href="javascript:void(0)" onclick="openStoreWhatsApp()">Help Center (WhatsApp)</a>
+        <a href="#store">Return Policy (7-Day Guarantee)</a>
+        <a href="#store">Shipping &amp; Delivery</a>
+        <a href="#store">Privacy Policy</a>
+        <a href="#store">Terms of Service</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-inner">
+        <span>© 2026 LOG HARDWARE · Faizan B Hardware, KGF, Karnataka. All rights reserved.</span>
+        <span>Genuine Indian Appliance &amp; Hardware Spare Parts</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shopping Cart Slide-over Panel -->
+  <aside id="cartPanel" class="cart-panel" aria-label="Shopping cart" aria-hidden="true">
+    <div class="cart-head">
+      <h2>Your Parts Order List</h2>
+      <button class="icon-button" data-close-cart type="button" aria-label="Close cart">×</button>
+    </div>
+
+    <div id="cartItems" class="cart-items">
+      <!-- Populated by renderCart() in app.js -->
+    </div>
+
+    <div class="cart-foot">
+      <div class="cart-summary-box">
+        <div class="cart-summary-row">
+          <span>Total Parts:</span>
+          <strong id="cartTotal">0</strong>
+        </div>
+        <div class="cart-summary-row total-row">
+          <span>Estimated Total:</span>
+          <strong id="cartAmount">₹0</strong>
+        </div>
+      </div>
+      <button id="sendCart" class="send-order-btn" type="button">
+        💬 Send Complete Order on WhatsApp
+      </button>
+      <p class="cart-foot-note">
+        Your enquiry will automatically include part names, brands, chosen sizes, SKUs, and quantities for instant confirmation.
+      </p>
+    </div>
+  </aside>
+
+  <!-- Cart Backdrop Overlay -->
+  <div id="cartOverlay" class="cart-overlay" data-close-cart aria-hidden="true"></div>
+
+  <!-- JavaScript -->
+  <script src="google_drive.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
