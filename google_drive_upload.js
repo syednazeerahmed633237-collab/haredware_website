@@ -4,61 +4,33 @@ LOG HARDWARE
 Google Drive Image Upload
 ==========================================================
 
-This file uploads product images directly to Google Drive.
+Uploads product images directly to:
+Log HARDWARE Images
 
 Authentication:
 Google OAuth 2.0
-
-Folder:
-Log HARDWARE Images
-
 ==========================================================
 */
 
-
 const GOOGLE_DRIVE_UPLOAD_CONFIG = {
-
-    /*
-     * Your Google Cloud OAuth 2.0
-     * Web Application Client ID.
-     *
-     * Replace this value.
-     */
     CLIENT_ID:
         "977268075453-u44242ti0q8eunhv5ftnkv3ku5ouhc11.apps.googleusercontent.com",
 
-
-    /*
-     * Your Google Drive folder ID.
-     */
     FOLDER_ID:
         "1bKz5OdLYc6XTXeT-9FjgA8iceKlKyWAZ",
 
-
-    /*
-     * Permission required for creating files
-     * in Google Drive.
-     */
     SCOPES:
         "https://www.googleapis.com/auth/drive.file"
-
 };
 
 
 const GoogleDriveUploader = {
 
     tokenClient: null,
-
     accessToken: null,
-
     initialized: false,
+    tokenRequestInProgress: false,
 
-
-    /*
-    ------------------------------------------------------
-    Initialize Google Identity Services
-    ------------------------------------------------------
-    */
 
     init: function () {
 
@@ -67,66 +39,61 @@ const GoogleDriveUploader = {
             !google.accounts ||
             !google.accounts.oauth2
         ) {
-
             console.error(
                 "Google Identity Services did not load."
             );
 
-            return;
-
+            return false;
         }
 
+        try {
 
-        this.tokenClient =
-            google.accounts.oauth2.initTokenClient({
+            this.tokenClient =
+                google.accounts.oauth2.initTokenClient({
 
-                client_id:
-                    GOOGLE_DRIVE_UPLOAD_CONFIG.CLIENT_ID,
+                    client_id:
+                        GOOGLE_DRIVE_UPLOAD_CONFIG.CLIENT_ID,
 
-                scope:
-                    GOOGLE_DRIVE_UPLOAD_CONFIG.SCOPES,
+                    scope:
+                        GOOGLE_DRIVE_UPLOAD_CONFIG.SCOPES,
 
-                callback: (response) => {
-
-                    if (response.error) {
-
-                        console.error(
-                            "Google OAuth error:",
-                            response
-                        );
-
-                        return;
-
+                    callback: () => {
+                        // Callback is assigned in signIn().
                     }
 
-                    this.accessToken =
-                        response.access_token;
+                });
 
-                    console.log(
-                        "Google Drive authentication successful."
-                    );
+            this.initialized = true;
 
-                }
+            console.log(
+                "Google Identity Services initialized."
+            );
 
-            });
+            return true;
 
+        } catch (error) {
 
-        this.initialized = true;
+            console.error(
+                "Google Identity Services initialization failed:",
+                error
+            );
 
+            this.initialized = false;
+            this.tokenClient = null;
+
+            return false;
+        }
     },
 
-
-    /*
-    ------------------------------------------------------
-    Sign in
-    ------------------------------------------------------
-    */
 
     signIn: function () {
 
         return new Promise((resolve, reject) => {
 
-            if (!this.initialized) {
+            if (
+                !this.initialized ||
+                !this.tokenClient
+            ) {
 
                 reject(
                     new Error(
@@ -137,16 +104,41 @@ const GoogleDriveUploader = {
                 return;
             }
 
+            if (this.tokenRequestInProgress) {
+
+                reject(
+                    new Error(
+                        "Google sign-in is already in progress."
+                    )
+                );
+
+                return;
+            }
+
+            this.tokenRequestInProgress = true;
 
             this.tokenClient.callback =
                 (response) => {
 
-                    if (response.error) {
+                    this.tokenRequestInProgress = false;
 
-                        console.error(response);
+                    if (
+                        !response ||
+                        response.error ||
+                        !response.access_token
+                    ) {
+
+                        console.error(
+                            "Google OAuth error:",
+                            response
+                        );
+
+                        this.accessToken = null;
 
                         reject(
                             new Error(
+                                response?.error_description ||
+                                response?.error ||
                                 "Google sign-in failed. Please try again."
                             )
                         );
@@ -154,105 +146,161 @@ const GoogleDriveUploader = {
                         return;
                     }
 
-
                     this.accessToken =
                         response.access_token;
 
+                    console.log(
+                        "Google Drive authentication successful."
+                    );
 
                     resolve(response);
-
                 };
 
 
-            this.tokenClient.requestAccessToken({
+            try {
 
-                prompt:
-                    this.accessToken
-                        ? ""
-                        : "consent"
+                this.tokenClient.requestAccessToken({
 
-            });
+                    prompt:
+                        this.accessToken
+                            ? ""
+                            : "consent"
 
+                });
+
+            } catch (error) {
+
+                this.tokenRequestInProgress = false;
+
+                console.error(
+                    "Google sign-in request failed:",
+                    error
+                );
+
+                reject(
+                    new Error(
+                        "Unable to open Google sign-in. Please try again."
+                    )
+                );
+            }
         });
-
     },
 
-
-    /*
-    ------------------------------------------------------
-    Sign out
-    ------------------------------------------------------
-    */
 
     signOut: function () {
 
-        if (!this.accessToken) {
-            return;
-        }
+        if (this.accessToken) {
 
+            try {
 
-        google.accounts.oauth2.revoke(
-            this.accessToken,
-            () => {
+                google.accounts.oauth2.revoke(
+                    this.accessToken,
+                    () => {
 
-                console.log(
-                    "Google Drive access revoked."
+                        console.log(
+                            "Google Drive access revoked."
+                        );
+
+                    }
                 );
 
-            }
-        );
+            } catch (error) {
 
+                console.warn(
+                    "Google revoke warning:",
+                    error
+                );
+            }
+        }
 
         this.accessToken = null;
-
+        this.tokenRequestInProgress = false;
     },
 
-
-    /*
-    ------------------------------------------------------
-    Check authentication
-    ------------------------------------------------------
-    */
 
     isSignedIn: function () {
 
-        return Boolean(this.accessToken);
-
+        return Boolean(
+            this.accessToken &&
+            typeof this.accessToken === "string" &&
+            this.accessToken.length > 20
+        );
     },
 
 
     /*
-    ------------------------------------------------------
-    Upload image
-    ------------------------------------------------------
-    */
+     * Get a valid OAuth access token.
+     *
+     * IMPORTANT:
+     * Upload does not rely only on the UI connected state.
+     */
+    getAccessToken: async function () {
 
+        if (this.isSignedIn()) {
+            return this.accessToken;
+        }
+
+        if (!this.initialized) {
+
+            throw new Error(
+                "Google Drive is not ready. Please refresh the page."
+            );
+        }
+
+        const response =
+            await this.signIn();
+
+        if (
+            response &&
+            response.access_token
+        ) {
+
+            this.accessToken =
+                response.access_token;
+
+            return this.accessToken;
+        }
+
+        throw new Error(
+            "Google Drive authentication is required."
+        );
+    },
+
+
+    /*
+     * Upload image to Google Drive.
+     */
     uploadImage: async function (
         originalFile,
         filename
     ) {
-
-        if (!this.accessToken) {
-
-            throw new Error(
-                "Please connect Google Drive first."
-            );
-
-        }
-
 
         if (!originalFile) {
 
             throw new Error(
                 "No image selected."
             );
+        }
 
+        if (!filename) {
+
+            throw new Error(
+                "A filename is required."
+            );
         }
 
 
         /*
-         * Create a new File object with the generated
-         * filename.
+         * Get OAuth token.
+         *
+         * This is the important fix.
+         */
+        let token =
+            await this.getAccessToken();
+
+
+        /*
+         * Rename uploaded file.
          */
         const renamedFile =
             new File(
@@ -267,10 +315,7 @@ const GoogleDriveUploader = {
 
 
         /*
-         * Metadata tells Google Drive:
-         *
-         * name = generated filename
-         * parents = Log HARDWARE Images folder
+         * Google Drive metadata.
          */
         const metadata = {
 
@@ -282,23 +327,17 @@ const GoogleDriveUploader = {
             parents: [
                 GOOGLE_DRIVE_UPLOAD_CONFIG.FOLDER_ID
             ]
-
         };
 
 
         /*
-         * Use multipart upload.
-         *
-         * Google documents multipart upload for small
-         * files and resumable upload for larger files.
+         * Multipart upload.
          */
         const boundary =
             "-------314159265358979323846";
 
-
         const delimiter =
             `\r\n--${boundary}\r\n`;
-
 
         const closeDelimiter =
             `\r\n--${boundary}--`;
@@ -324,9 +363,18 @@ const GoogleDriveUploader = {
             ]);
 
 
-        const response =
+        const uploadUrl =
+            "https://www.googleapis.com/upload/drive/v3/files" +
+            "?uploadType=multipart" +
+            "&fields=id,name,mimeType,webViewLink";
+
+
+        /*
+         * First upload attempt.
+         */
+        let response =
             await fetch(
-                "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType,webViewLink",
+                uploadUrl,
                 {
 
                     method: "POST",
@@ -334,7 +382,7 @@ const GoogleDriveUploader = {
                     headers: {
 
                         "Authorization":
-                            `Bearer ${this.accessToken}`,
+                            `Bearer ${token}`,
 
                         "Content-Type":
                             `multipart/related; boundary=${boundary}`
@@ -343,22 +391,48 @@ const GoogleDriveUploader = {
 
                     body:
                         multipartBody
-
                 }
             );
 
 
         /*
          * Token expired.
+         *
+         * Get a fresh token and retry once.
          */
         if (response.status === 401) {
 
-            this.accessToken = null;
-
-            throw new Error(
-                "Google Drive session expired. Please connect Google Drive again."
+            console.warn(
+                "Google access token expired. Requesting new token..."
             );
 
+            this.accessToken = null;
+
+            token =
+                await this.getAccessToken();
+
+
+            response =
+                await fetch(
+                    uploadUrl,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Authorization":
+                                `Bearer ${token}`,
+
+                            "Content-Type":
+                                `multipart/related; boundary=${boundary}`
+
+                        },
+
+                        body:
+                            multipartBody
+                    }
+                );
         }
 
 
@@ -375,27 +449,28 @@ const GoogleDriveUploader = {
                     await response.json();
 
                 errorText =
-                    errorData.error?.message || "";
+                    errorData?.error?.message ||
+                    "";
 
-            } catch (e) {
-
+            } catch (error) {
                 // Ignore JSON parsing error.
             }
 
 
             throw new Error(
                 "Google Drive permission denied. " +
-                "Make sure the signed-in Google account owns or can edit the Log HARDWARE Images folder." +
-                (errorText
-                    ? ` (${errorText})`
-                    : "")
+                "Make sure the signed-in Google account has access to the Log HARDWARE Images folder." +
+                (
+                    errorText
+                        ? ` (${errorText})`
+                        : ""
+                )
             );
-
         }
 
 
         /*
-         * Other error.
+         * Other errors.
          */
         if (!response.ok) {
 
@@ -408,35 +483,41 @@ const GoogleDriveUploader = {
                     await response.json();
 
                 if (
-                    errorData.error &&
-                    errorData.error.message
+                    errorData?.error?.message
                 ) {
 
                     message +=
                         ` ${errorData.error.message}`;
-
                 }
 
-            } catch (e) {
-
-                // Ignore parsing error.
+            } catch (error) {
+                // Ignore JSON parsing error.
             }
 
-
             throw new Error(message);
-
         }
 
 
         /*
-         * Successful upload.
+         * Upload successful.
          */
         const result =
             await response.json();
 
 
+        console.log(
+            "Google Drive upload successful:",
+            result
+        );
+
+
         return result;
-
     }
-
 };
+
+
+/*
+ * Make available globally.
+ */
+window.GoogleDriveUploader =
+    GoogleDriveUploader;
