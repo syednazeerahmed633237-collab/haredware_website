@@ -1,59 +1,39 @@
 /* =========================================================
-   LOG HARDWARE - CATALOGUE / FILTER SYSTEM
-
-   IMPORTANT:
-   - This file is only for index.html.
-   - DO NOT replace app.js.
-   - Upload functionality remains unchanged.
-   - Products are loaded from the existing Google Drive connector.
+   LOG HARDWARE - CATALOGUE + FILTER + CART + WHATSAPP
    ========================================================= */
 
-(() => {
+(function () {
+
     "use strict";
 
-    const state = {
-        products: [],
-        filteredProducts: [],
-        search: "",
-        category: "All",
-        brand: "All"
-    };
+    /* =====================================================
+       CONFIGURATION
+       ===================================================== */
 
-    const elements = {};
+    // CHANGE THIS TO YOUR REAL WHATSAPP NUMBER
+    // India example: 919876543210
+    const WHATSAPP_NUMBER = "919XXXXXXXXX";
 
-    /* ======================================================
-       INITIALIZE ELEMENTS
-       ====================================================== */
-
-    function initElements() {
-
-        elements.search =
-            document.getElementById("searchFilter");
-
-        elements.category =
-            document.getElementById("categoryFilter");
-
-        elements.brand =
-            document.getElementById("brandFilter");
-
-        elements.clear =
-            document.getElementById("clearFilters");
-
-        elements.grid =
-            document.getElementById("productGrid");
-
-        elements.count =
-            document.getElementById("productCount");
-    }
+    const CART_STORAGE_KEY = "logHardwareCart";
 
 
-    /* ======================================================
-       HTML ESCAPE
-       ====================================================== */
+    /* =====================================================
+       STATE
+       ===================================================== */
+
+    let allProducts = [];
+    let filteredProducts = [];
+
+    let cart = loadCart();
+
+
+    /* =====================================================
+       HELPERS
+       ===================================================== */
 
     function escapeHtml(value) {
 
-        return String(value ?? "")
+        return String(value || "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
@@ -62,288 +42,1603 @@
     }
 
 
-    /* ======================================================
-       NORMALIZE
-       ====================================================== */
+    function displayValue(value) {
 
-    function normalize(value) {
+        if (!value) {
+            return "-";
+        }
 
-        return String(value ?? "")
+        return String(value)
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+
+    function normalizeValue(value) {
+
+        return String(value || "")
             .trim()
             .toLowerCase()
             .replace(/\s+/g, "-");
     }
 
 
-    /* ======================================================
-       HUMAN READABLE TEXT
-       ====================================================== */
-
-    function humanize(value) {
-
-        return String(value ?? "")
-            .replace(/[-_]+/g, " ")
-            .replace(/\s+/g, " ")
-            .trim()
-            .replace(/\b\w/g, char => char.toUpperCase());
-    }
-
-
-    /* ======================================================
-       BRAND DISPLAY
-       ====================================================== */
-
-    function formatBrand(value) {
-
-        const key = normalize(value);
-
-        const brands = {
-
-            "lg": "LG",
-
-            "samsung": "Samsung",
-
-            "daikin": "Daikin",
-
-            "voltas": "Voltas",
-
-            "whirlpool": "Whirlpool",
-
-            "carrier": "Carrier",
-
-            "crompton": "Crompton",
-
-            "schneider": "Schneider",
-
-            "honeywell": "Honeywell",
-
-            "taparia": "Taparia",
-
-            "kent": "Kent",
-
-            "supreme": "Supreme",
-
-            "mandev": "Mandev",
-
-            "3m": "3M",
-
-            "godrej": "Godrej",
-
-            "ifb": "IFB",
-
-            "haier": "Haier",
-
-            "panasonic": "Panasonic",
-
-            "hitachi": "Hitachi",
-
-            "bosch": "Bosch"
-
-        };
-
-        return brands[key] || humanize(value);
-    }
-
-
-    /* ======================================================
-       CATEGORY DISPLAY
-       ====================================================== */
-
-    function formatCategory(value) {
-
-        const key = normalize(value);
-
-        const categories = {
-
-            "general-tools": "General Tools",
-
-            "washing-machine": "Washing Machine",
-
-            "refrigerator": "Refrigerator",
-
-            "water-purifier": "Water Purifier",
-
-            "microwave": "Microwave",
-
-            "air-conditioner": "Air Conditioner",
-
-            "ac-parts": "AC Parts",
-
-            "television": "Television",
-
-            "kitchen-appliance": "Kitchen Appliance",
-
-            "general-tool": "General Tool",
-
-            "spare-parts": "Spare Parts",
-
-            "accessories": "Accessories",
-
-            "other": "Other"
-
-        };
-
-        return categories[key] || humanize(value);
-    }
-
-
-    /* ======================================================
-       PRODUCT NAME
-       ====================================================== */
-
-    function getDisplayProductName(product) {
-
-        if (product.displayProduct) {
-            return product.displayProduct;
-        }
-
-        return humanize(product.product);
-    }
-
-
-    /* ======================================================
-       SEARCH TEXT
-       ====================================================== */
-
-    function getProductSearchText(product) {
+    function getProductKey(product) {
 
         return [
-
-            product.product,
-
-            product.displayProduct,
-
-            product.category,
-
-            product.displayCategory,
-
-            product.brand,
-
-            product.displayBrand,
-
-            product.partNumber,
-
-            product.size,
-
-            product.coCode,
-
-            product.filename
-
+            product.product || "",
+            product.category || "",
+            product.brand || "",
+            product.size || "",
+            product.fileId || ""
         ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
+            .map(normalizeValue)
+            .join("|");
     }
 
 
-    /* ======================================================
-       CREATE PRODUCT FROM DRIVE FILE
-       ====================================================== */
+    /* =====================================================
+       CART STORAGE
+       ===================================================== */
 
-    function buildProductFromDriveFile(file) {
-
-        if (!file || !file.id || !file.name) {
-            return null;
-        }
-
-        const connector =
-            window.GoogleDriveConnector;
-
-        if (!connector) {
-
-            console.error(
-                "GoogleDriveConnector is not available."
-            );
-
-            return null;
-        }
-
-        const parsed =
-            connector.parseGoogleDriveFilename(file.name);
-
-        /*
-         * If the filename does not follow:
-         *
-         * PRODUCT-C-CATEGORY-B-BRAND-S-PARTNUMBER-CO-CODE.jpg
-         *
-         * then it cannot be used as a catalogue product.
-         */
-
-        if (!parsed) {
-
-            console.warn(
-                "Invalid product filename:",
-                file.name
-            );
-
-            return null;
-        }
-
-
-        /*
-         * Use the existing Google Drive thumbnail
-         * URL logic.
-         */
-
-        const image =
-            `https://drive.google.com/thumbnail?id=${encodeURIComponent(file.id)}&sz=w1600`;
-
-
-        return {
-
-            fileId: file.id,
-
-            filename: file.name,
-
-            image: image,
-
-            product: parsed.product,
-
-            displayProduct:
-                humanize(parsed.product),
-
-            category:
-                parsed.category,
-
-            displayCategory:
-                formatCategory(parsed.category),
-
-            brand:
-                parsed.brand,
-
-            displayBrand:
-                formatBrand(parsed.brand),
-
-            size:
-                parsed.size || parsed.partNumber || "",
-
-            partNumber:
-                parsed.partNumber || parsed.size || "",
-
-            coCode:
-                parsed.coCode || "",
-
-            mimeType:
-                file.mimeType || "",
-
-            modifiedTime:
-                file.modifiedTime || ""
-
-        };
-    }
-
-
-    /* ======================================================
-       LOAD GOOGLE DRIVE CATALOGUE
-       ====================================================== */
-
-    async function loadCatalogue() {
-
-        showLoading();
+    function loadCart() {
 
         try {
 
-            if (!window.GoogleDriveConnector) {
+            const saved =
+                localStorage.getItem(CART_STORAGE_KEY);
+
+            if (!saved) {
+                return [];
+            }
+
+            const parsed =
+                JSON.parse(saved);
+
+            return Array.isArray(parsed)
+                ? parsed
+                : [];
+
+        } catch (error) {
+
+            console.warn(
+                "Could not load cart:",
+                error
+            );
+
+            return [];
+        }
+    }
+
+
+    function saveCart() {
+
+        localStorage.setItem(
+            CART_STORAGE_KEY,
+            JSON.stringify(cart)
+        );
+
+        updateCartUI();
+    }
+
+
+    function getCartTotalQuantity() {
+
+        return cart.reduce(
+            (total, item) =>
+                total + Number(item.quantity || 0),
+            0
+        );
+    }
+
+
+    /* =====================================================
+       ADD TO CART
+       ===================================================== */
+
+    function addToCart(product) {
+
+        const key =
+            getProductKey(product);
+
+        const existing =
+            cart.find(
+                item =>
+                    item.key === key
+            );
+
+        if (existing) {
+
+            existing.quantity =
+                Number(existing.quantity || 0) + 1;
+
+        } else {
+
+            cart.push({
+
+                key: key,
+
+                product:
+                    product.product || "",
+
+                category:
+                    product.category || "",
+
+                brand:
+                    product.brand || "",
+
+                size:
+                    product.size || "",
+
+                image:
+                    product.image || "",
+
+                fileId:
+                    product.fileId || "",
+
+                filename:
+                    product.filename || "",
+
+                quantity: 1
+
+            });
+        }
+
+        saveCart();
+
+        openCart();
+
+        showCartMessage(
+            `${displayValue(product.product)} added to cart.`
+        );
+    }
+
+
+    /* =====================================================
+       REMOVE FROM CART
+       ===================================================== */
+
+    function removeFromCart(key) {
+
+        cart =
+            cart.filter(
+                item =>
+                    item.key !== key
+            );
+
+        saveCart();
+    }
+
+
+    /* =====================================================
+       CHANGE QUANTITY
+       ===================================================== */
+
+    function changeCartQuantity(
+        key,
+        amount
+    ) {
+
+        const item =
+            cart.find(
+                product =>
+                    product.key === key
+            );
+
+        if (!item) {
+            return;
+        }
+
+        item.quantity =
+            Number(item.quantity || 0) +
+            Number(amount);
+
+        if (item.quantity <= 0) {
+
+            removeFromCart(key);
+
+            return;
+        }
+
+        saveCart();
+    }
+
+
+    /* =====================================================
+       CLEAR CART
+       ===================================================== */
+
+    function clearCart() {
+
+        if (!cart.length) {
+            return;
+        }
+
+        cart = [];
+
+        saveCart();
+
+        renderCart();
+    }
+
+
+    /* =====================================================
+       CART HEADER
+       ===================================================== */
+
+    function createCartButton() {
+
+        if (
+            document.getElementById(
+                "headerCartButton"
+            )
+        ) {
+            return;
+        }
+
+        const container =
+            document.querySelector(
+                ".topbar-container"
+            );
+
+        if (!container) {
+            return;
+        }
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+
+        button.id =
+            "headerCartButton";
+
+        button.className =
+            "header-cart-button";
+
+        button.setAttribute(
+            "aria-label",
+            "Open cart"
+        );
+
+        button.innerHTML = `
+            <span class="cart-icon">🛒</span>
+            <span class="cart-label">Cart</span>
+            <span id="cartCount" class="cart-count">0</span>
+        `;
+
+        button.addEventListener(
+            "click",
+            openCart
+        );
+
+        container.appendChild(button);
+    }
+
+
+    /* =====================================================
+       CART DRAWER HTML
+       ===================================================== */
+
+    function createCartDrawer() {
+
+        if (
+            document.getElementById(
+                "cartOverlay"
+            )
+        ) {
+            return;
+        }
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.innerHTML = `
+
+            <div
+                id="cartOverlay"
+                class="cart-overlay">
+            </div>
+
+            <aside
+                id="cartDrawer"
+                class="cart-drawer"
+                aria-label="Shopping cart">
+
+                <div class="cart-header">
+
+                    <div>
+                        <span class="cart-eyebrow">
+                            YOUR SELECTION
+                        </span>
+
+                        <h2>
+                            Spare Parts Cart
+                        </h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="cartCloseButton"
+                        class="cart-close-button"
+                        aria-label="Close cart">
+                        ×
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="cartMessage"
+                    class="cart-message">
+                </div>
+
+
+                <div
+                    id="cartItems"
+                    class="cart-items">
+                </div>
+
+
+                <div
+                    id="cartEmpty"
+                    class="cart-empty">
+
+                    <div class="cart-empty-icon">
+                        🛒
+                    </div>
+
+                    <h3>
+                        Your cart is empty
+                    </h3>
+
+                    <p>
+                        Add spare parts from the catalogue.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="cartBrowseButton"
+                        class="cart-browse-button">
+                        Browse Spare Parts
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="cartFooter"
+                    class="cart-footer">
+
+                    <div class="cart-summary">
+
+                        <span>
+                            Total Items
+                        </span>
+
+                        <strong
+                            id="cartTotalItems">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="cartWhatsAppButton"
+                        class="cart-whatsapp-button">
+
+                        <span>💬</span>
+
+                        Send Cart on WhatsApp
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cartClearButton"
+                        class="cart-clear-button">
+
+                        Clear Cart
+
+                    </button>
+
+                </div>
+
+            </aside>
+        `;
+
+        document.body.appendChild(
+            wrapper
+        );
+
+
+        document
+            .getElementById(
+                "cartOverlay"
+            )
+            .addEventListener(
+                "click",
+                closeCart
+            );
+
+
+        document
+            .getElementById(
+                "cartCloseButton"
+            )
+            .addEventListener(
+                "click",
+                closeCart
+            );
+
+
+        document
+            .getElementById(
+                "cartBrowseButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    closeCart();
+
+                    document
+                        .getElementById(
+                            "products-section"
+                        )
+                        ?.scrollIntoView({
+                            behavior: "smooth"
+                        });
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "cartClearButton"
+            )
+            .addEventListener(
+                "click",
+                clearCart
+            );
+
+
+        document
+            .getElementById(
+                "cartWhatsAppButton"
+            )
+            .addEventListener(
+                "click",
+                sendCartToWhatsApp
+            );
+    }
+
+
+    /* =====================================================
+       OPEN CART
+       ===================================================== */
+
+    function openCart() {
+
+        const drawer =
+            document.getElementById(
+                "cartDrawer"
+            );
+
+        const overlay =
+            document.getElementById(
+                "cartOverlay"
+            );
+
+        if (!drawer || !overlay) {
+            return;
+        }
+
+        renderCart();
+
+        drawer.classList.add("is-open");
+
+        overlay.classList.add("is-visible");
+
+        document.body.classList.add(
+            "cart-open"
+        );
+    }
+
+
+    /* =====================================================
+       CLOSE CART
+       ===================================================== */
+
+    function closeCart() {
+
+        const drawer =
+            document.getElementById(
+                "cartDrawer"
+            );
+
+        const overlay =
+            document.getElementById(
+                "cartOverlay"
+            );
+
+        if (drawer) {
+
+            drawer.classList.remove(
+                "is-open"
+            );
+        }
+
+        if (overlay) {
+
+            overlay.classList.remove(
+                "is-visible"
+            );
+        }
+
+        document.body.classList.remove(
+            "cart-open"
+        );
+    }
+
+
+    /* =====================================================
+       RENDER CART
+       ===================================================== */
+
+    function renderCart() {
+
+        const container =
+            document.getElementById(
+                "cartItems"
+            );
+
+        const empty =
+            document.getElementById(
+                "cartEmpty"
+            );
+
+        const footer =
+            document.getElementById(
+                "cartFooter"
+            );
+
+        const total =
+            document.getElementById(
+                "cartTotalItems"
+            );
+
+        if (!container) {
+            return;
+        }
+
+        container.innerHTML = "";
+
+
+        const totalQuantity =
+            getCartTotalQuantity();
+
+
+        if (total) {
+
+            total.textContent =
+                totalQuantity;
+        }
+
+
+        if (!cart.length) {
+
+            empty?.classList.add(
+                "is-visible"
+            );
+
+            footer?.classList.remove(
+                "is-visible"
+            );
+
+            return;
+        }
+
+
+        empty?.classList.remove(
+            "is-visible"
+        );
+
+        footer?.classList.add(
+            "is-visible"
+        );
+
+
+        cart.forEach(item => {
+
+            const element =
+                document.createElement(
+                    "article"
+                );
+
+            element.className =
+                "cart-item";
+
+
+            element.innerHTML = `
+
+                <div class="cart-item-image">
+
+                    <img
+                        src="${escapeHtml(item.image)}"
+                        alt="${escapeHtml(
+                            displayValue(item.product)
+                        )}"
+                        loading="lazy"
+                        onerror="this.style.display='none';"
+                    >
+
+                </div>
+
+
+                <div class="cart-item-content">
+
+                    <div class="cart-item-title">
+
+                        ${escapeHtml(
+                            displayValue(item.product)
+                        )}
+
+                    </div>
+
+
+                    <div class="cart-item-detail">
+
+                        <strong>Brand:</strong>
+                        ${escapeHtml(
+                            displayValue(item.brand)
+                        )}
+
+                    </div>
+
+
+                    <div class="cart-item-detail">
+
+                        <strong>Category:</strong>
+                        ${escapeHtml(
+                            displayValue(item.category)
+                        )}
+
+                    </div>
+
+
+                    <div class="cart-item-detail">
+
+                        <strong>Code:</strong>
+                        ${escapeHtml(
+                            displayValue(item.size)
+                        )}
+
+                    </div>
+
+
+                    <div class="cart-item-controls">
+
+                        <button
+                            type="button"
+                            class="quantity-button"
+                            data-cart-minus="${escapeHtml(item.key)}">
+                            −
+                        </button>
+
+                        <span class="quantity-value">
+                            ${Number(item.quantity || 1)}
+                        </span>
+
+                        <button
+                            type="button"
+                            class="quantity-button"
+                            data-cart-plus="${escapeHtml(item.key)}">
+                            +
+                        </button>
+
+                        <button
+                            type="button"
+                            class="cart-remove-button"
+                            data-cart-remove="${escapeHtml(item.key)}">
+                            Remove
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+
+            container.appendChild(
+                element
+            );
+        });
+
+
+        container
+            .querySelectorAll(
+                "[data-cart-minus]"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        changeCartQuantity(
+                            button.dataset.cartMinus,
+                            -1
+                        );
+
+                        renderCart();
+                    }
+                );
+            });
+
+
+        container
+            .querySelectorAll(
+                "[data-cart-plus]"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        changeCartQuantity(
+                            button.dataset.cartPlus,
+                            1
+                        );
+
+                        renderCart();
+                    }
+                );
+            });
+
+
+        container
+            .querySelectorAll(
+                "[data-cart-remove]"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        removeFromCart(
+                            button.dataset.cartRemove
+                        );
+
+                        renderCart();
+                    }
+                );
+            });
+    }
+
+
+    /* =====================================================
+       UPDATE CART COUNT
+       ===================================================== */
+
+    function updateCartUI() {
+
+        const count =
+            document.getElementById(
+                "cartCount"
+            );
+
+        if (count) {
+
+            count.textContent =
+                getCartTotalQuantity();
+        }
+
+        renderCart();
+    }
+
+
+    /* =====================================================
+       CART MESSAGE
+       ===================================================== */
+
+    function showCartMessage(
+        message
+    ) {
+
+        const element =
+            document.getElementById(
+                "cartMessage"
+            );
+
+        if (!element) {
+            return;
+        }
+
+        element.textContent =
+            message;
+
+        element.classList.add(
+            "show"
+        );
+
+        setTimeout(
+            () => {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            2200
+        );
+    }
+
+
+    /* =====================================================
+       PRODUCT CARD
+       ===================================================== */
+
+    function renderProductCard(
+        product
+    ) {
+
+        const card =
+            document.createElement(
+                "article"
+            );
+
+        card.className =
+            "product-card";
+
+
+        const productName =
+            displayValue(
+                product.product
+            );
+
+        const category =
+            displayValue(
+                product.category
+            );
+
+        const brand =
+            displayValue(
+                product.brand
+            );
+
+        const code =
+            product.size || "-";
+
+
+        card.innerHTML = `
+
+            <div class="product-image-wrap">
+
+                <img
+                    class="product-image"
+                    src="${escapeHtml(product.image || "")}"
+                    alt="${escapeHtml(productName)}"
+                    loading="lazy"
+                    onerror="
+                        this.onerror=null;
+                        this.src='data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="600" height="600">
+                                <rect width="100%" height="100%" fill="#f3eee7"/>
+                                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#8b7355" font-size="22">
+                                    Image unavailable
+                                </text>
+                            </svg>
+                        `)}';
+                    "
+                >
+
+            </div>
+
+
+            <div class="product-card-body">
+
+                <h3 class="product-title">
+                    ${escapeHtml(productName)}
+                </h3>
+
+
+                <div class="product-info-list">
+
+                    <div class="product-info-row">
+                        <span>Brand</span>
+                        <strong>
+                            ${escapeHtml(brand)}
+                        </strong>
+                    </div>
+
+
+                    <div class="product-info-row">
+                        <span>Category</span>
+                        <strong>
+                            ${escapeHtml(category)}
+                        </strong>
+                    </div>
+
+
+                    <div class="product-info-row">
+                        <span>Code</span>
+                        <strong>
+                            ${escapeHtml(code)}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="product-actions">
+
+                    <button
+                        type="button"
+                        class="add-cart-button">
+
+                        🛒 Add to Cart
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="product-whatsapp-button">
+
+                        💬 WhatsApp
+
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+
+        card
+            .querySelector(
+                ".add-cart-button"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    addToCart(product);
+
+                }
+            );
+
+
+        card
+            .querySelector(
+                ".product-whatsapp-button"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    sendSingleProductToWhatsApp(
+                        product
+                    );
+
+                }
+            );
+
+
+        return card;
+    }
+
+
+    /* =====================================================
+       RENDER PRODUCTS
+       ===================================================== */
+
+    function renderProducts(
+        products
+    ) {
+
+        const grid =
+            document.getElementById(
+                "productGrid"
+            );
+
+        if (!grid) {
+            return;
+        }
+
+        grid.innerHTML = "";
+
+
+        if (!products.length) {
+
+            grid.innerHTML = `
+
+                <div class="catalogue-empty">
+
+                    <div class="catalogue-empty-icon">
+                        🔍
+                    </div>
+
+                    <h3>
+                        No spare parts found
+                    </h3>
+
+                    <p>
+                        Try another search, category or brand.
+                    </p>
+
+                </div>
+            `;
+
+            updateProductCount(0);
+
+            return;
+        }
+
+
+        const fragment =
+            document.createDocumentFragment();
+
+
+        products.forEach(
+            product => {
+
+                fragment.appendChild(
+                    renderProductCard(
+                        product
+                    )
+                );
+
+            }
+        );
+
+
+        grid.appendChild(
+            fragment
+        );
+
+
+        updateProductCount(
+            products.length
+        );
+    }
+
+
+    /* =====================================================
+       PRODUCT COUNT
+       ===================================================== */
+
+    function updateProductCount(
+        count
+    ) {
+
+        const element =
+            document.getElementById(
+                "productCount"
+            );
+
+        if (!element) {
+            return;
+        }
+
+        element.textContent =
+            `${count} product${count === 1 ? "" : "s"}`;
+    }
+
+
+    /* =====================================================
+       FILTER DROPDOWNS
+       ===================================================== */
+
+    function populateFilters(
+        products
+    ) {
+
+        const categorySelect =
+            document.getElementById(
+                "categoryFilter"
+            );
+
+        const brandSelect =
+            document.getElementById(
+                "brandFilter"
+            );
+
+
+        if (!categorySelect ||
+            !brandSelect) {
+
+            return;
+        }
+
+
+        const categories =
+            [...new Set(
+                products
+                    .map(
+                        product =>
+                            displayValue(
+                                product.category
+                            )
+                    )
+                    .filter(Boolean)
+            )]
+                .sort();
+
+
+        const brands =
+            [...new Set(
+                products
+                    .map(
+                        product =>
+                            displayValue(
+                                product.brand
+                            )
+                    )
+                    .filter(Boolean)
+            )]
+                .sort();
+
+
+        categorySelect.innerHTML =
+            `<option value="All">All Categories</option>`;
+
+
+        brandSelect.innerHTML =
+            `<option value="All">All Brands</option>`;
+
+
+        categories.forEach(
+            category => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    category;
+
+                option.textContent =
+                    category;
+
+                categorySelect.appendChild(
+                    option
+                );
+            }
+        );
+
+
+        brands.forEach(
+            brand => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    brand;
+
+                option.textContent =
+                    brand;
+
+                brandSelect.appendChild(
+                    option
+                );
+            }
+        );
+    }
+
+
+    /* =====================================================
+       FILTER PRODUCTS
+       ===================================================== */
+
+    function applyFilters() {
+
+        const search =
+            (
+                document.getElementById(
+                    "searchFilter"
+                )?.value || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const category =
+            document.getElementById(
+                "categoryFilter"
+            )?.value || "All";
+
+
+        const brand =
+            document.getElementById(
+                "brandFilter"
+            )?.value || "All";
+
+
+        filteredProducts =
+            allProducts.filter(
+                product => {
+
+                    const searchable = [
+
+                        product.product,
+
+                        product.category,
+
+                        product.brand,
+
+                        product.size,
+
+                        product.filename
+
+                    ]
+                        .join(" ")
+                        .toLowerCase();
+
+
+                    const searchMatch =
+                        !search ||
+                        searchable.includes(
+                            search
+                        );
+
+
+                    const categoryMatch =
+                        category === "All" ||
+                        displayValue(
+                            product.category
+                        ) === category;
+
+
+                    const brandMatch =
+                        brand === "All" ||
+                        displayValue(
+                            product.brand
+                        ) === brand;
+
+
+                    return (
+                        searchMatch &&
+                        categoryMatch &&
+                        brandMatch
+                    );
+                }
+            );
+
+
+        renderProducts(
+            filteredProducts
+        );
+    }
+
+
+    /* =====================================================
+       CATEGORY
+       ===================================================== */
+
+    window.chooseCategory =
+        function (category) {
+
+            const select =
+                document.getElementById(
+                    "categoryFilter"
+                );
+
+            if (select) {
+
+                const options =
+                    [...select.options];
+
+                const matching =
+                    options.find(
+                        option =>
+                            normalizeValue(
+                                option.value
+                            ) ===
+                            normalizeValue(
+                                category
+                            )
+                    );
+
+                if (matching) {
+
+                    select.value =
+                        matching.value;
+                }
+            }
+
+            applyFilters();
+
+            document
+                .getElementById(
+                    "products-section"
+                )
+                ?.scrollIntoView({
+                    behavior: "smooth"
+                });
+        };
+
+
+    /* =====================================================
+       BRAND
+       ===================================================== */
+
+    window.chooseBrand =
+        function (brand) {
+
+            const select =
+                document.getElementById(
+                    "brandFilter"
+                );
+
+            if (select) {
+
+                const options =
+                    [...select.options];
+
+                const matching =
+                    options.find(
+                        option =>
+                            normalizeValue(
+                                option.value
+                            ) ===
+                            normalizeValue(
+                                brand
+                            )
+                    );
+
+                if (matching) {
+
+                    select.value =
+                        matching.value;
+                }
+            }
+
+            applyFilters();
+
+            document
+                .getElementById(
+                    "products-section"
+                )
+                ?.scrollIntoView({
+                    behavior: "smooth"
+                });
+        };
+
+
+    /* =====================================================
+       SINGLE PRODUCT WHATSAPP
+       ===================================================== */
+
+    function sendSingleProductToWhatsApp(
+        product
+    ) {
+
+        const productName =
+            displayValue(
+                product.product
+            );
+
+        const category =
+            displayValue(
+                product.category
+            );
+
+        const brand =
+            displayValue(
+                product.brand
+            );
+
+        const code =
+            product.size || "-";
+
+
+        const message =
+
+`Hello LOG HARDWARE,
+
+I am interested in this spare part.
+
+PRODUCT: ${productName}
+BRAND: ${brand}
+CATEGORY: ${category}
+CODE: ${code}
+
+PRODUCT IMAGE:
+${product.image || "Image URL unavailable"}
+
+Please confirm availability and price.
+
+Thank you.`;
+
+
+        openWhatsApp(
+            message
+        );
+    }
+
+
+    /* =====================================================
+       CART WHATSAPP
+       ===================================================== */
+
+    function sendCartToWhatsApp() {
+
+        if (!cart.length) {
+
+            showCartMessage(
+                "Your cart is empty."
+            );
+
+            return;
+        }
+
+
+        let message =
+
+`Hello LOG HARDWARE,
+
+I would like to enquire about the following spare parts:
+
+`;
+
+
+        cart.forEach(
+            (item, index) => {
+
+                message += `
+
+${index + 1}. ${displayValue(item.product)}
+
+Brand: ${displayValue(item.brand)}
+Category: ${displayValue(item.category)}
+Code: ${item.size || "-"}
+Quantity: ${item.quantity}
+
+Product Image:
+${item.image || "Image URL unavailable"}
+
+------------------------------`;
+            }
+        );
+
+
+        message += `
+
+Please confirm availability and price for all the above items.
+
+Thank you.`;
+
+
+        openWhatsApp(
+            message
+        );
+    }
+
+
+    /* =====================================================
+       OPEN WHATSAPP
+       ===================================================== */
+
+    function openWhatsApp(
+        message
+    ) {
+
+        const number =
+            String(
+                WHATSAPP_NUMBER
+            )
+                .replace(/\D/g, "");
+
+
+        if (
+            !number ||
+            number === "919XXXXXXXXX"
+        ) {
+
+            alert(
+                "Please set your WhatsApp number in catalogue.js first."
+            );
+
+            return;
+        }
+
+
+        const url =
+            "https://wa.me/" +
+            number +
+            "?text=" +
+            encodeURIComponent(
+                message
+            );
+
+
+        window.open(
+            url,
+            "_blank",
+            "noopener,noreferrer"
+        );
+    }
+
+
+    /* =====================================================
+       STORE WHATSAPP
+       ===================================================== */
+
+    window.openStoreWhatsApp =
+        function () {
+
+            const message =
+`Hello LOG HARDWARE,
+
+I need help finding a spare part.
+
+Please assist me with availability and price.
+
+Thank you.`;
+
+
+            openWhatsApp(
+                message
+            );
+        };
+
+
+    /* =====================================================
+       LOAD GOOGLE DRIVE CATALOGUE
+       ===================================================== */
+
+    async function loadCatalogue() {
+
+        const grid =
+            document.getElementById(
+                "productGrid"
+            );
+
+
+        if (!grid) {
+            return;
+        }
+
+
+        grid.innerHTML = `
+
+            <div class="catalogue-loading">
+
+                <div class="loading-spinner"></div>
+
+                <h3>
+                    Loading spare parts...
+                </h3>
+
+                <p>
+                    Reading the live Google Drive catalogue.
+                </p>
+
+            </div>
+        `;
+
+
+        try {
+
+            if (
+                !window.GoogleDriveConnector ||
+                typeof
+                    window.GoogleDriveConnector
+                        .getGoogleDriveImages !==
+                    "function"
+            ) {
 
                 throw new Error(
                     "Google Drive connector is not loaded."
@@ -351,944 +1646,226 @@
             }
 
 
-            /*
-             * This uses the EXISTING Google Drive
-             * connection code.
-             *
-             * Nothing related to upload is changed.
-             */
-
             const files =
-                await window.GoogleDriveConnector
+                await
+                window.GoogleDriveConnector
                     .getGoogleDriveImages();
 
 
-            console.log(
-                "Google Drive files received:",
-                files
-            );
+            const index =
+                window.GoogleDriveConnector
+                    .buildGoogleDriveImageIndex(
+                        files
+                    );
 
 
-            const products =
-                files
-                    .map(buildProductFromDriveFile)
-                    .filter(Boolean);
+            const products = [];
 
 
-            state.products =
+            Object.keys(index)
+                .forEach(
+                    productKey => {
+
+                        const images =
+                            index[
+                                productKey
+                            ] || [];
+
+
+                        images.forEach(
+                            image => {
+
+                                products.push({
+
+                                    product:
+                                        image.product,
+
+                                    category:
+                                        image.category,
+
+                                    brand:
+                                        image.brand,
+
+                                    size:
+                                        image.size,
+
+                                    image:
+                                        image.image,
+
+                                    fileId:
+                                        image.fileId,
+
+                                    filename:
+                                        image.filename,
+
+                                    mimeType:
+                                        image.mimeType,
+
+                                    modifiedTime:
+                                        image.modifiedTime
+                                });
+                            }
+                        );
+                    }
+                );
+
+
+            allProducts =
                 products;
 
-            state.filteredProducts =
-                [...products];
+
+            filteredProducts =
+                [...allProducts];
 
 
-            populateFilterOptions(products);
-
-            applyFilters();
-
-
-            console.log(
-                `LOG HARDWARE catalogue loaded: ${products.length} products.`
+            populateFilters(
+                allProducts
             );
 
-        }
 
-        catch (error) {
+            renderProducts(
+                filteredProducts
+            );
+
+
+        } catch (error) {
 
             console.error(
-                "Catalogue loading failed:",
+                "Catalogue loading error:",
                 error
             );
 
-            state.products = [];
 
-            state.filteredProducts = [];
+            grid.innerHTML = `
 
-            showError(
-                error.message ||
-                "Unable to load Google Drive catalogue."
-            );
-        }
-    }
+                <div class="catalogue-empty">
 
+                    <div class="catalogue-empty-icon">
+                        ⚠️
+                    </div>
 
-    /* ======================================================
-       POPULATE CATEGORY + BRAND FILTERS
-       ====================================================== */
+                    <h3>
+                        Catalogue could not be loaded
+                    </h3>
 
-    function populateFilterOptions(products) {
+                    <p>
+                        ${escapeHtml(
+                            error.message ||
+                            "Please try again."
+                        )}
+                    </p>
 
-        if (!elements.category ||
-            !elements.brand) {
-
-            return;
-        }
-
-
-        const categories =
-            new Map();
-
-        const brands =
-            new Map();
-
-
-        products.forEach(product => {
-
-            const categoryKey =
-                normalize(product.category);
-
-            const brandKey =
-                normalize(product.brand);
-
-
-            if (categoryKey) {
-
-                categories.set(
-                    categoryKey,
-                    product.displayCategory
-                );
-            }
-
-
-            if (brandKey) {
-
-                brands.set(
-                    brandKey,
-                    product.displayBrand
-                );
-            }
-
-        });
-
-
-        /*
-         * Category
-         */
-
-        elements.category.innerHTML =
-            '<option value="All">All Categories</option>';
-
-
-        [...categories.entries()]
-            .sort((a, b) =>
-                a[1].localeCompare(b[1])
-            )
-            .forEach(([value, label]) => {
-
-                const option =
-                    document.createElement("option");
-
-                option.value =
-                    value;
-
-                option.textContent =
-                    label;
-
-                elements.category.appendChild(
-                    option
-                );
-            });
-
-
-        /*
-         * Brand
-         */
-
-        elements.brand.innerHTML =
-            '<option value="All">All Brands</option>';
-
-
-        [...brands.entries()]
-            .sort((a, b) =>
-                a[1].localeCompare(b[1])
-            )
-            .forEach(([value, label]) => {
-
-                const option =
-                    document.createElement("option");
-
-                option.value =
-                    value;
-
-                option.textContent =
-                    label;
-
-                elements.brand.appendChild(
-                    option
-                );
-            });
-
-
-        elements.category.value =
-            state.category;
-
-        elements.brand.value =
-            state.brand;
-    }
-
-
-    /* ======================================================
-       APPLY FILTERS
-       ====================================================== */
-
-    function applyFilters() {
-
-        const search =
-            state.search
-                .trim()
-                .toLowerCase();
-
-
-        const category =
-            normalize(state.category);
-
-
-        const brand =
-            normalize(state.brand);
-
-
-        state.filteredProducts =
-            state.products.filter(product => {
-
-                const matchesSearch =
-                    !search ||
-                    getProductSearchText(product)
-                        .includes(search);
-
-
-                const matchesCategory =
-                    state.category === "All" ||
-                    normalize(product.category) === category;
-
-
-                const matchesBrand =
-                    state.brand === "All" ||
-                    normalize(product.brand) === brand;
-
-
-                return (
-                    matchesSearch &&
-                    matchesCategory &&
-                    matchesBrand
-                );
-
-            });
-
-
-        renderProducts();
-    }
-
-
-    /* ======================================================
-       RENDER PRODUCTS
-       ====================================================== */
-
-    function renderProducts() {
-
-        if (!elements.grid) {
-            return;
-        }
-
-
-        elements.grid.innerHTML = "";
-
-
-        const total =
-            state.filteredProducts.length;
-
-
-        const overall =
-            state.products.length;
-
-
-        /*
-         * Dynamic product count
-         */
-
-        if (elements.count) {
-
-            elements.count.textContent =
-                `${total} ${
-                    total === 1
-                        ? "product"
-                        : "products"
-                }`;
-        }
-
-
-        /*
-         * No products
-         */
-
-        if (!total) {
-
-            const panel =
-                document.createElement("div");
-
-            panel.className =
-                "no-results-panel";
-
-
-            panel.innerHTML = `
-
-                <div class="no-results-icon">
-                    🔎
                 </div>
-
-                <h3>
-                    No spare parts found
-                </h3>
-
-                <p>
-                    ${
-                        overall
-                            ? "Try another search, category, or brand."
-                            : "No valid product images were found in the Google Drive folder."
-                    }
-                </p>
-
-                ${
-                    overall
-                        ? `
-                            <button
-                                type="button"
-                                class="filter-clear-btn no-results-clear">
-                                Clear Filters
-                            </button>
-                          `
-                        : ""
-                }
-
             `;
 
-
-            elements.grid.appendChild(
-                panel
-            );
-
-
-            const clearButton =
-                panel.querySelector(
-                    ".no-results-clear"
-                );
-
-
-            if (clearButton) {
-
-                clearButton.addEventListener(
-                    "click",
-                    clearFilters
-                );
-            }
-
-
-            return;
+            updateProductCount(0);
         }
-
-
-        /*
-         * Create cards
-         */
-
-        const fragment =
-            document.createDocumentFragment();
-
-
-        state.filteredProducts.forEach(
-            product => {
-
-                fragment.appendChild(
-                    createProductCard(product)
-                );
-
-            }
-        );
-
-
-        elements.grid.appendChild(
-            fragment
-        );
     }
 
 
-    /* ======================================================
-       PRODUCT CARD
-       ====================================================== */
+    /* =====================================================
+       FILTER EVENTS
+       ===================================================== */
 
-    function createProductCard(product) {
+    function setupFilters() {
 
-        const card =
-            document.createElement("article");
-
-
-        card.className =
-            "product-card";
-
-
-        const productName =
-            getDisplayProductName(product);
-
+        const search =
+            document.getElementById(
+                "searchFilter"
+            );
 
         const category =
-            product.displayCategory ||
-            formatCategory(product.category);
-
+            document.getElementById(
+                "categoryFilter"
+            );
 
         const brand =
-            product.displayBrand ||
-            formatBrand(product.brand);
+            document.getElementById(
+                "brandFilter"
+            );
+
+        const clear =
+            document.getElementById(
+                "clearFilters"
+            );
 
 
-        const partNumber =
-            product.partNumber ||
-            product.size ||
-            "";
-
-
-        const coCode =
-            product.coCode ||
-            "";
-
-
-        card.innerHTML = `
-
-            <div class="image-wrap">
-
-                <img
-                    src="${escapeHtml(product.image)}"
-                    alt="${escapeHtml(productName)}"
-                    loading="lazy"
-                    referrerpolicy="no-referrer"
-                >
-
-                <span class="card-tag">
-                    ${escapeHtml(category)}
-                </span>
-
-            </div>
-
-
-            <div class="card-copy">
-
-                <h3 class="product-title">
-                    ${escapeHtml(productName)}
-                </h3>
-
-
-                <p class="card-brand-meta">
-
-                    <span class="meta-brand">
-                        ${escapeHtml(brand)}
-                    </span>
-
-                    ${
-                        partNumber
-                            ? `
-                                <span class="meta-separator">
-                                    •
-                                </span>
-
-                                <span class="meta-sku">
-                                    ${escapeHtml(partNumber)}
-                                </span>
-                              `
-                            : ""
-                    }
-
-                </p>
-
-
-                ${
-                    coCode
-                        ? `
-                            <p class="card-brand-meta">
-
-                                <span class="meta-sku">
-                                    CO Code:
-                                    ${escapeHtml(coCode)}
-                                </span>
-
-                            </p>
-                          `
-                        : ""
-                }
-
-            </div>
-
-        `;
-
-
-        /*
-         * Image fallback
-         */
-
-        const image =
-            card.querySelector("img");
-
-
-        image.addEventListener(
-            "error",
-            () => {
-
-                if (
-                    image.dataset.fallbackApplied === "1"
-                ) {
-                    return;
-                }
-
-
-                image.dataset.fallbackApplied =
-                    "1";
-
-
-                image.src =
-                    `https://drive.google.com/thumbnail?id=${encodeURIComponent(
-                        product.fileId
-                    )}&sz=w1000`;
-
-            }
+        search?.addEventListener(
+            "input",
+            applyFilters
         );
 
 
-        return card;
-    }
+        category?.addEventListener(
+            "change",
+            applyFilters
+        );
 
 
-    /* ======================================================
-       LOADING STATE
-       ====================================================== */
-
-    function showLoading() {
-
-        if (!elements.grid) {
-            return;
-        }
+        brand?.addEventListener(
+            "change",
+            applyFilters
+        );
 
 
-        elements.grid.innerHTML = `
+        clear?.addEventListener(
+            "click",
+            () => {
 
-            <div class="no-results-panel">
+                if (search) {
+                    search.value = "";
+                }
 
-                <div class="no-results-icon">
-                    ⏳
-                </div>
+                if (category) {
+                    category.value = "All";
+                }
 
-                <h3>
-                    Loading spare parts...
-                </h3>
+                if (brand) {
+                    brand.value = "All";
+                }
 
-                <p>
-                    Reading product images and details
-                    from Google Drive.
-                </p>
-
-            </div>
-
-        `;
-
-
-        if (elements.count) {
-
-            elements.count.textContent =
-                "Loading...";
-        }
-    }
-
-
-    /* ======================================================
-       ERROR STATE
-       ====================================================== */
-
-    function showError(message) {
-
-        if (!elements.grid) {
-            return;
-        }
-
-
-        elements.grid.innerHTML = `
-
-            <div class="no-results-panel">
-
-                <div class="no-results-icon">
-                    ⚠️
-                </div>
-
-                <h3>
-                    Catalogue could not be loaded
-                </h3>
-
-                <p>
-                    ${escapeHtml(message)}
-                </p>
-
-            </div>
-
-        `;
-
-
-        if (elements.count) {
-
-            elements.count.textContent =
-                "0 products";
-        }
-    }
-
-
-    /* ======================================================
-       CLEAR FILTERS
-       ====================================================== */
-
-    function clearFilters() {
-
-        state.search =
-            "";
-
-        state.category =
-            "All";
-
-        state.brand =
-            "All";
-
-
-        if (elements.search) {
-            elements.search.value =
-                "";
-        }
-
-
-        if (elements.category) {
-            elements.category.value =
-                "All";
-        }
-
-
-        if (elements.brand) {
-            elements.brand.value =
-                "All";
-        }
-
-
-        /*
-         * Remove category card selection
-         */
-
-        document
-            .querySelectorAll(
-                ".category-card.selected"
-            )
-            .forEach(card => {
-
-                card.classList.remove(
-                    "selected"
-                );
-
-            });
-
-
-        applyFilters();
-    }
-
-
-    /* ======================================================
-       CATEGORY CARD
-       ====================================================== */
-
-    function chooseCategory(category) {
-
-        const wanted =
-            normalize(category);
-
-
-        if (elements.category) {
-
-            const option =
-                [...elements.category.options]
-                    .find(item =>
-                        normalize(item.value) === wanted ||
-                        normalize(item.textContent) === wanted
-                    );
-
-
-            if (option) {
-
-                state.category =
-                    option.value;
-
-                elements.category.value =
-                    option.value;
+                applyFilters();
             }
-        }
-
-
-        /*
-         * Clear text search when selecting
-         * a category card.
-         */
-
-        state.search =
-            "";
-
-
-        if (elements.search) {
-
-            elements.search.value =
-                "";
-        }
-
-
-        /*
-         * Highlight selected category.
-         */
-
-        document
-            .querySelectorAll(".category-card")
-            .forEach(card => {
-
-                card.classList.toggle(
-                    "selected",
-                    normalize(card.dataset.category) === wanted
-                );
-
-            });
-
-
-        applyFilters();
-
-
-        /*
-         * Scroll to product section.
-         */
-
-        document
-            .getElementById("products-section")
-            ?.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+        );
     }
 
 
-    /* ======================================================
-       BRAND PILL
-       ====================================================== */
-
-    function chooseBrand(brand) {
-
-        const wanted =
-            normalize(brand);
-
-
-        if (elements.brand) {
-
-            const option =
-                [...elements.brand.options]
-                    .find(item =>
-                        normalize(item.value) === wanted ||
-                        normalize(item.textContent) === wanted
-                    );
-
-
-            if (option) {
-
-                state.brand =
-                    option.value;
-
-                elements.brand.value =
-                    option.value;
-            }
-        }
-
-
-        /*
-         * Clear text search.
-         */
-
-        state.search =
-            "";
-
-
-        if (elements.search) {
-
-            elements.search.value =
-                "";
-        }
-
-
-        /*
-         * Remove category highlight.
-         */
-
-        document
-            .querySelectorAll(
-                ".category-card.selected"
-            )
-            .forEach(card => {
-
-                card.classList.remove(
-                    "selected"
-                );
-
-            });
-
-
-        applyFilters();
-
-
-        document
-            .getElementById("products-section")
-            ?.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-    }
-
-
-    /* ======================================================
-       EVENTS
-       ====================================================== */
-
-    function bindEvents() {
-
-        /*
-         * Search
-         */
-
-        if (elements.search) {
-
-            elements.search.addEventListener(
-                "input",
-                event => {
-
-                    state.search =
-                        event.target.value;
-
-                    applyFilters();
-
-                }
-            );
-        }
-
-
-        /*
-         * Category
-         */
-
-        if (elements.category) {
-
-            elements.category.addEventListener(
-                "change",
-                event => {
-
-                    state.category =
-                        event.target.value;
-
-
-                    document
-                        .querySelectorAll(
-                            ".category-card"
-                        )
-                        .forEach(card => {
-
-                            card.classList.toggle(
-                                "selected",
-                                normalize(
-                                    card.dataset.category
-                                ) ===
-                                normalize(
-                                    state.category
-                                )
-                            );
-
-                        });
-
-
-                    applyFilters();
-
-                }
-            );
-        }
-
-
-        /*
-         * Brand
-         */
-
-        if (elements.brand) {
-
-            elements.brand.addEventListener(
-                "change",
-                event => {
-
-                    state.brand =
-                        event.target.value;
-
-                    applyFilters();
-
-                }
-            );
-        }
-
-
-        /*
-         * Clear filters
-         */
-
-        if (elements.clear) {
-
-            elements.clear.addEventListener(
-                "click",
-                clearFilters
-            );
-        }
-    }
-
-
-    /* ======================================================
+    /* =====================================================
        INITIALIZE
-       ====================================================== */
+       ===================================================== */
 
-    function init() {
+    async function initializeCatalogue() {
 
-        initElements();
+        createCartButton();
 
-        bindEvents();
+        createCartDrawer();
 
-        loadCatalogue();
+        setupFilters();
+
+        updateCartUI();
+
+        await loadCatalogue();
     }
 
 
-    /*
-     * Make these functions available to the
-     * existing onclick attributes in index.html.
-     */
-
-    window.chooseCategory =
-        chooseCategory;
-
-    window.chooseBrand =
-        chooseBrand;
-
-    window.clearCatalogueFilters =
-        clearFilters;
-
+    /* =====================================================
+       START
+       ===================================================== */
 
     if (
-        document.readyState === "loading"
+        document.readyState ===
+        "loading"
     ) {
 
         document.addEventListener(
             "DOMContentLoaded",
-            init,
-            {
-                once: true
-            }
+            initializeCatalogue
         );
 
     } else {
 
-        init();
-
+        initializeCatalogue();
     }
+
 
 })();
