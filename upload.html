@@ -241,6 +241,223 @@
             color: #dc2626;
         }
 
+        .brand-logo {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 12px;
+            background: #f3f4f6;
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .secondary-button {
+            width: 100%;
+            height: 48px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #111827;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .secondary-button:hover {
+            background: #f3f4f6;
+        }
+
+        .secondary-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .multi-image-note {
+            margin-top: 10px;
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .product-keep-note {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 9px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+
+        .batch-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .batch-header h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .batch-header p {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .product-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+            background: #ffffff;
+        }
+
+        .product-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .product-number {
+            font-size: 14px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .remove-product {
+            border: 0;
+            background: transparent;
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .product-grid .full {
+            grid-column: 1 / -1;
+        }
+
+        .product-card input,
+        .product-card select {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 0 12px;
+            font-size: 14px;
+            background: #fff;
+            color: #111827;
+            outline: none;
+        }
+
+        .product-card input:focus,
+        .product-card select:focus {
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+        }
+
+        .product-card label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .product-image-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 16px;
+            background: #fafafa;
+            text-align: center;
+        }
+
+        .product-preview {
+            display: none;
+            width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #f3f4f6;
+        }
+
+        .product-image-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .filename-preview {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 12px;
+            word-break: break-all;
+            text-align: left;
+        }
+
+        .batch-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .add-product-button {
+            width: auto;
+            padding: 0 18px;
+            white-space: nowrap;
+        }
+
+        .product-upload-status {
+            display: none;
+            margin-top: 10px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .product-upload-status.success {
+            display: block;
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .product-upload-status.error {
+            display: block;
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .product-upload-status.info {
+            display: block;
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
         @media (max-width: 600px) {
             .page {
                 padding: 20px 14px 40px;
@@ -256,6 +473,35 @@
             }
 
             .image-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-grid .full {
+                grid-column: auto;
+            }
+
+            .batch-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .add-product-button {
+                width: 100%;
+            }
+
+            .batch-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .product-image-actions {
                 grid-template-columns: 1fr;
             }
         }
@@ -379,6 +625,13 @@
 <div class="page">
 
     <div class="header">
+        <!-- Replace logo.png with your LOG HARDWARE logo file -->
+        <img
+            src="logo.png"
+            class="brand-logo"
+            alt="Log HARDWARE logo"
+            onerror="this.style.display='none';">
+
         <div class="brand">Log HARDWARE</div>
 
         <h1>Upload Product Image</h1>
@@ -406,134 +659,37 @@
             </button>
         </div>
 
-        <!-- PRODUCT NAME -->
-        <div class="form-group">
-            <label for="productName">
-                Product Name <span class="required">*</span>
-            </label>
-
-            <input
-                type="text"
-                id="productName"
-                placeholder="Example: LG Refrigerator Adjustable Heavy Duty Stand"
-                autocomplete="off">
-        </div>
-
-        <!-- CATEGORY -->
-        <div class="form-group">
-            <label for="category">
-                Category <span class="required">*</span>
-            </label>
-
-            <select id="category">
-                <option value="">Select Category</option>
-
-                <option value="refrigerator">Refrigerator</option>
-                <option value="air-conditioner">Air Conditioner</option>
-                <option value="washing-machine">Washing Machine</option>
-                <option value="microwave">Microwave</option>
-                <option value="television">Television</option>
-                <option value="kitchen-appliance">Kitchen Appliance</option>
-                <option value="general-tool">General Tool</option>
-                <option value="spare-parts">Spare Parts</option>
-                <option value="accessories">Accessories</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-
-        <!-- BRAND -->
-        <div class="form-group">
-            <label for="brand">
-                Brand <span class="required">*</span>
-            </label>
-
-            <select id="brand">
-                <option value="">Select Brand</option>
-
-                <option value="lg">LG</option>
-                <option value="samsung">Samsung</option>
-                <option value="whirlpool">Whirlpool</option>
-                <option value="godrej">Godrej</option>
-                <option value="ifb">IFB</option>
-                <option value="haier">Haier</option>
-                <option value="panasonic">Panasonic</option>
-                <option value="voltas">Voltas</option>
-                <option value="daikin">Daikin</option>
-                <option value="hitachi">Hitachi</option>
-                <option value="bosch">Bosch</option>
-                <option value="general-tool">General Tool</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-
-        <!-- SIZE / PART NUMBER -->
-        <div class="form-group">
-            <label for="partNumber">
-                Size / Part Number <span class="required">*</span>
-            </label>
-
-            <input
-                type="text"
-                id="partNumber"
-                placeholder="Example: CLS32170401"
-                autocomplete="off">
-        </div>
-
-        <!-- GENERATED FILENAME -->
-        <div class="filename-box">
-            <div class="filename-label">
-                GOOGLE DRIVE FILENAME
+        <!-- BATCH PRODUCTS -->
+        <div class="batch-header">
+            <div>
+                <h2>Products</h2>
+                <p>Add multiple products and upload their images in one batch.</p>
             </div>
-
-            <div id="generatedFilename">
-                Enter product details to generate filename
-            </div>
+            <button type="button" class="secondary-button add-product-button" id="addProductButton">
+                + Add Product
+            </button>
         </div>
 
-        <br>
+        <div id="productsContainer"></div>
 
-        <!-- IMAGE -->
-        <div class="image-area">
+        <div class="batch-actions">
+            <button
+                type="button"
+                class="upload-button"
+                id="uploadAllButton"
+                disabled>
+                Upload All to Google Drive
+            </button>
 
-            <img
-                id="imagePreview"
-                class="preview"
-                alt="Product preview">
-
-            <div class="image-buttons">
-
-                <button
-                    type="button"
-                    class="image-button"
-                    id="chooseImageButton">
-                    Choose Image
-                </button>
-
-                <button
-                    type="button"
-                    class="image-button"
-                    id="cameraButton">
-                    📷 Take Photo
-                </button>
-
-            </div>
-
-            <!-- Normal file -->
-            <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                hidden>
-
-            <!-- Camera -->
-            <input
-                type="file"
-                id="cameraInput"
-                accept="image/*"
-                capture="environment"
-                hidden>
-
+            <button
+                type="button"
+                class="secondary-button"
+                id="resetButton">
+                Reset All
+            </button>
         </div>
+
+        <div id="batchStatus" class="status"></div>
 
         <!-- CONNECT DRIVE -->
         <button
@@ -544,13 +700,24 @@
         </button>
 
         <!-- UPLOAD -->
-        <button
-            type="button"
-            class="upload-button"
-            id="uploadButton"
-            disabled>
-            Upload to Google Drive
-        </button>
+<div class="form-actions">
+
+            <button
+                type="button"
+                class="secondary-button"
+                id="addAnotherButton"
+                disabled>
+                + Add Another Image
+            </button>
+
+            <button
+                type="button"
+                class="secondary-button"
+                id="resetButton">
+                Reset
+            </button>
+
+        </div>
 
         <div id="status" class="status"></div>
 
@@ -561,7 +728,7 @@
 <!-- GOOGLE IDENTITY SERVICES -->
 
     <!-- GOOGLE DRIVE CONNECT MODAL -->
-    <div class="modal-overlay" id="driveConnectModal" aria-hidden="true">
+    <div class="modal-overlay" id="driveConnectModal" aria-hidden="true" inert>
         <div class="drive-modal" role="dialog" aria-modal="true" aria-labelledby="driveModalTitle">
             <div class="drive-icon">☁️</div>
 
@@ -586,7 +753,7 @@
 
 
     <!-- GOOGLE DRIVE CONNECTED MODAL -->
-    <div class="modal-overlay" id="driveSuccessModal" aria-hidden="true">
+    <div class="modal-overlay" id="driveSuccessModal" aria-hidden="true" inert>
         <div class="drive-modal" role="dialog" aria-modal="true" aria-labelledby="driveSuccessTitle">
 
             <div class="modal-success-icon">✓</div>
@@ -615,32 +782,25 @@
 
 <script>
 
-    let selectedFile = null;
+    let productCounter = 0;
 
-    const productName = document.getElementById("productName");
-    const category = document.getElementById("category");
-    const brand = document.getElementById("brand");
-    const partNumber = document.getElementById("partNumber");
+    const productsContainer =
+        document.getElementById("productsContainer");
 
-    const imageInput = document.getElementById("imageInput");
-    const cameraInput = document.getElementById("cameraInput");
+    const addProductButton =
+        document.getElementById("addProductButton");
 
-    const imagePreview = document.getElementById("imagePreview");
+    const uploadAllButton =
+        document.getElementById("uploadAllButton");
 
-    const generatedFilename =
-        document.getElementById("generatedFilename");
+    const resetButton =
+        document.getElementById("resetButton");
 
-    const chooseImageButton =
-        document.getElementById("chooseImageButton");
-
-    const cameraButton =
-        document.getElementById("cameraButton");
+    const batchStatus =
+        document.getElementById("batchStatus");
 
     const loginButton =
         document.getElementById("loginButton");
-
-    const uploadButton =
-        document.getElementById("uploadButton");
 
     const logoutButton =
         document.getElementById("logoutButton");
@@ -648,13 +808,22 @@
     const driveStatus =
         document.getElementById("driveStatus");
 
-    const status =
-        document.getElementById("status");
+    const driveConnectModal =
+        document.getElementById("driveConnectModal");
+
+    const driveSuccessModal =
+        document.getElementById("driveSuccessModal");
+
+    const cancelDriveButton =
+        document.getElementById("cancelDriveButton");
+
+    const confirmDriveButton =
+        document.getElementById("confirmDriveButton");
+
+    const closeSuccessButton =
+        document.getElementById("closeSuccessButton");
 
 
-    /*
-     * Convert text to filename-safe format.
-     */
     function slugify(value) {
 
         return value
@@ -667,43 +836,10 @@
     }
 
 
-    /*
-     * Generate:
-     *
-     * product-C-category-B-brand-S-partnumber.jpg
-     */
-    function getGeneratedFilename() {
-
-        const name = slugify(productName.value);
-        const cat = slugify(category.value);
-        const br = slugify(brand.value);
-        const part = slugify(partNumber.value);
-
-        if (!name || !cat || !br || !part) {
-
-            generatedFilename.textContent =
-                "Enter product details to generate filename";
-
-            return null;
-        }
-
-        const extension =
-            selectedFile
-                ? getFileExtension(selectedFile.name)
-                : "jpg";
-
-        const filename =
-            `${name}-C-${cat}-B-${br}-S-${part}.${extension}`;
-
-        generatedFilename.textContent = filename;
-
-        return filename;
-    }
-
-
     function getFileExtension(filename) {
 
-        const parts = filename.split(".");
+        const parts =
+            filename.split(".");
 
         if (parts.length < 2) {
             return "jpg";
@@ -724,409 +860,880 @@
     }
 
 
-    /*
-     * Update filename whenever details change.
-     */
-    [
-        productName,
-        category,
-        brand,
-        partNumber
-    ].forEach(element => {
+    function getGeneratedFilename(card) {
 
-        element.addEventListener("input", getGeneratedFilename);
-        element.addEventListener("change", getGeneratedFilename);
-
-    });
-
-
-    /*
-     * Choose image.
-     */
-    chooseImageButton.addEventListener("click", () => {
-
-        imageInput.click();
-
-    });
-
-
-    /*
-     * Camera.
-     */
-    cameraButton.addEventListener("click", () => {
-
-        cameraInput.click();
-
-    });
-
-
-    /*
-     * Handle selected image.
-     */
-    function handleImage(file) {
-
-        if (!file) {
-            return;
-        }
-
-        if (!file.type.startsWith("image/")) {
-
-            showStatus(
-                "Please select an image file.",
-                "error"
+        const name =
+            slugify(
+                card.querySelector(".product-name").value
             );
 
-            return;
+        const category =
+            slugify(
+                card.querySelector(".product-category").value
+            );
+
+        const brand =
+            slugify(
+                card.querySelector(".product-brand").value
+            );
+
+        const coCode = normalizeCode(card.querySelector('.product-co-code')?.value || '');
+        const partNumber =
+            slugify(
+                card.querySelector(".product-part-number").value
+            );
+
+        const imageInput =
+            card.querySelector(".product-image-input");
+
+        const file =
+            imageInput.files[0];
+
+        if (
+            !name ||
+            !category ||
+            !brand ||
+            !partNumber
+        ) {
+            card.querySelector(".filename-preview").textContent =
+                "Complete product details to generate filename.";
+
+            return null;
         }
 
-        selectedFile = file;
+        const extension =
+            file
+                ? getFileExtension(file.name)
+                : "jpg";
 
-        updateUploadButton();
+        const filename =
+            `${name}-C-${category}-B-${brand}-S-${partNumber}-CO-${coCode}.${extension}`;
 
-        const reader = new FileReader();
+        card.querySelector(".filename-preview").textContent =
+            filename;
 
-        reader.onload = function(event) {
-
-            imagePreview.src = event.target.result;
-            imagePreview.style.display = "block";
-
-        };
-
-        reader.readAsDataURL(file);
-
-        getGeneratedFilename();
-
-        updateUploadButton();
-
+        return filename;
     }
 
 
-    imageInput.addEventListener("change", event => {
+    function updateUploadAllButton() {
 
-        handleImage(event.target.files[0]);
+        const cards =
+            [...productsContainer.querySelectorAll(".product-card")];
 
-    });
-
-
-    cameraInput.addEventListener("change", event => {
-
-        handleImage(event.target.files[0]);
-
-    });
-
-
-    /*
-     * Update upload button.
-     */
-    function updateUploadButton() {
-
-        /*
-         * The button only depends on the form data and image.
-         * Google authentication is checked again when Upload is clicked.
-         * This avoids the OAuth token state preventing the button from
-         * visually enabling after a successful sign-in.
-         */
         const ready =
-            productName.value.trim() !== "" &&
-            category.value !== "" &&
-            brand.value !== "" &&
-            partNumber.value.trim() !== "" &&
-            selectedFile !== null;
+            cards.length > 0 &&
+            cards.every(card => {
 
-        uploadButton.disabled = !ready;
+                const name =
+                    card.querySelector(".product-name").value.trim();
 
-        if (ready) {
-            uploadButton.removeAttribute("disabled");
-        } else {
-            uploadButton.setAttribute("disabled", "disabled");
-        }
+                const category =
+                    card.querySelector(".product-category").value;
+
+                const brand =
+                    card.querySelector(".product-brand").value;
+
+                const coCode = normalizeCode(card.querySelector('.product-co-code')?.value || '');
+        const partNumber =
+                    card.querySelector(".product-part-number").value.trim();
+
+                const file =
+                    card.querySelector(".product-image-input").files[0];
+
+                return (
+                    name &&
+                    category &&
+                    brand &&
+                    partNumber &&
+                    file
+                );
+            });
+
+        uploadAllButton.disabled = !ready;
 
         return ready;
     }
 
 
-    [
-        productName,
-        category,
-        brand,
-        partNumber
-    ].forEach(element => {
+    function createProductCard() {
 
-        element.addEventListener("input", updateUploadButton);
-        element.addEventListener("change", updateUploadButton);
+        productCounter++;
 
-    });
+        const card =
+            document.createElement("div");
+
+        card.className = "product-card";
+
+        card.dataset.productId =
+            productCounter;
+
+        card.innerHTML = `
+            <div class="product-card-header">
+                <div class="product-number">
+                    Product ${productCounter}
+                </div>
+
+                <button
+                    type="button"
+                    class="remove-product">
+                    Remove
+                </button>
+            </div>
+
+            <div class="product-grid">
+
+                <div class="form-group full">
+                    <label>
+                        Product Name <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        class="product-name"
+                        placeholder="Example: LG Refrigerator Adjustable Heavy Duty Stand"
+                        autocomplete="off">
+                </div>
 
 
-    /*
-     * Google Drive login.
-     */
-    const driveConnectModal =
-        document.getElementById("driveConnectModal");
+                <div class="form-group">
+                    <label>
+                        Category <span class="required">*</span>
+                    </label>
 
-    const driveSuccessModal =
-        document.getElementById("driveSuccessModal");
+                    <select class="product-category">
+                        <option value="">Select Category</option>
+                        <option value="refrigerator">Refrigerator</option>
+                        <option value="air-conditioner">Air Conditioner</option>
+                        <option value="washing-machine">Washing Machine</option>
+                        <option value="microwave">Microwave</option>
+                        <option value="television">Television</option>
+                        <option value="kitchen-appliance">Kitchen Appliance</option>
+                        <option value="general-tool">General Tool</option>
+                        <option value="spare-parts">Spare Parts</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
 
-    const cancelDriveButton =
-        document.getElementById("cancelDriveButton");
 
-    const confirmDriveButton =
-        document.getElementById("confirmDriveButton");
+                <div class="form-group">
+                    <label>
+                        Brand <span class="required">*</span>
+                    </label>
 
-    const closeSuccessButton =
-        document.getElementById("closeSuccessButton");
+                    <select class="product-brand">
+                        <option value="">Select Brand</option>
+                        <option value="lg">LG</option>
+                        <option value="samsung">Samsung</option>
+                        <option value="whirlpool">Whirlpool</option>
+                        <option value="godrej">Godrej</option>
+                        <option value="ifb">IFB</option>
+                        <option value="haier">Haier</option>
+                        <option value="panasonic">Panasonic</option>
+                        <option value="voltas">Voltas</option>
+                        <option value="daikin">Daikin</option>
+                        <option value="hitachi">Hitachi</option>
+                        <option value="bosch">Bosch</option>
+                        <option value="general-tool">General Tool</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group full">
+                    <label>
+                        Size / Part Number <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        class="product-part-number"
+                        placeholder="Example: CLS32170401"
+                        autocomplete="off">
+                </div>
+
+
+                <div class="form-group full">
+                    <label>
+                        Product Image <span class="required">*</span>
+                    </label>
+
+                    <div class="product-image-area">
+
+                        <img
+                            class="product-preview"
+                            alt="Product preview">
+
+                        <div class="product-image-actions">
+
+                            <button
+                                type="button"
+                                class="image-button choose-product-image">
+                                Choose Image
+                            </button>
+
+                            <button
+                                type="button"
+                                class="image-button take-product-photo">
+                                📷 Take Photo
+                            </button>
+
+                        </div>
+
+                        <input
+                            type="file"
+                            class="product-image-input"
+                            accept="image/*"
+                            hidden>
+
+                        <input
+                            type="file"
+                            class="product-camera-input"
+                            accept="image/*"
+                            capture="environment"
+                            hidden>
+
+                        <div class="filename-preview">
+                            Complete product details to generate filename.
+                        </div>
+
+                        <div class="product-upload-status"></div>
+
+                    </div>
+                </div>
+
+            </div>
+        `;
+
+        productsContainer.appendChild(card);
+
+        const nameInput =
+            card.querySelector(".product-name");
+
+        const categoryInput =
+            card.querySelector(".product-category");
+
+        const brandInput =
+            card.querySelector(".product-brand");
+
+        const partNumberInput =
+            card.querySelector(".product-part-number");
+
+        const imageInput =
+            card.querySelector(".product-image-input");
+
+        const cameraInput =
+            card.querySelector(".product-camera-input");
+
+        const preview =
+            card.querySelector(".product-preview");
+
+        const chooseButton =
+            card.querySelector(".choose-product-image");
+
+        const cameraButton =
+            card.querySelector(".take-product-photo");
+
+        const removeButton =
+            card.querySelector(".remove-product");
+
+
+        [
+            nameInput,
+            categoryInput,
+            brandInput,
+            partNumberInput
+        ].forEach(element => {
+
+            element.addEventListener(
+                "input",
+                () => {
+                    getGeneratedFilename(card);
+                    updateUploadAllButton();
+                }
+            );
+
+            element.addEventListener(
+                "change",
+                () => {
+                    getGeneratedFilename(card);
+                    updateUploadAllButton();
+                }
+            );
+        });
+
+
+        chooseButton.addEventListener(
+            "click",
+            () => imageInput.click()
+        );
+
+
+        cameraButton.addEventListener(
+            "click",
+            () => cameraInput.click()
+        );
+
+
+        function handleImage(file) {
+
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+
+                setProductStatus(
+                    card,
+                    "Please select an image file.",
+                    "error"
+                );
+
+                return;
+            }
+
+            const dataTransfer =
+                new DataTransfer();
+
+            dataTransfer.items.add(file);
+
+            imageInput.files =
+                dataTransfer.files;
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                event => {
+
+                    preview.src =
+                        event.target.result;
+
+                    preview.style.display =
+                        "block";
+                };
+
+            reader.readAsDataURL(file);
+
+            getGeneratedFilename(card);
+            updateUploadAllButton();
+        }
+
+
+        imageInput.addEventListener(
+            "change",
+            event => {
+                handleImage(
+                    event.target.files[0]
+                );
+            }
+        );
+
+
+        cameraInput.addEventListener(
+            "change",
+            event => {
+                handleImage(
+                    event.target.files[0]
+                );
+            }
+        );
+
+
+        removeButton.addEventListener(
+            "click",
+            () => {
+
+                card.remove();
+
+                renumberProducts();
+                updateUploadAllButton();
+            }
+        );
+
+
+        return card;
+    }
+
+
+    function renumberProducts() {
+
+        const cards =
+            [...productsContainer.querySelectorAll(".product-card")];
+
+        cards.forEach(
+            (card, index) => {
+
+                card.querySelector(
+                    ".product-number"
+                ).textContent =
+                    `Product ${index + 1}`;
+            }
+        );
+    }
+
+
+    function setProductStatus(
+        card,
+        message,
+        type
+    ) {
+
+        const element =
+            card.querySelector(
+                ".product-upload-status"
+            );
+
+        element.className =
+            `product-upload-status ${type}`;
+
+        element.textContent =
+            message;
+    }
+
+
+    function setBatchStatus(
+        message,
+        type
+    ) {
+
+        batchStatus.className =
+            `status ${type}`;
+
+        batchStatus.innerHTML =
+            message;
+    }
 
 
     function openModal(modal) {
+
+        if (!modal) return;
+
+        modal.removeAttribute("inert");
         modal.classList.add("show");
-        modal.setAttribute("aria-hidden", "false");
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
     }
 
 
     function closeModal(modal) {
+
+        if (!modal) return;
+
+        if (
+            document.activeElement &&
+            modal.contains(document.activeElement)
+        ) {
+            document.activeElement.blur();
+        }
+
         modal.classList.remove("show");
-        modal.setAttribute("aria-hidden", "true");
-    }
-
-
-    loginButton.addEventListener("click", () => {
-        openModal(driveConnectModal);
-    });
-
-
-    cancelDriveButton.addEventListener("click", () => {
-        closeModal(driveConnectModal);
-    });
-
-
-    closeSuccessButton.addEventListener("click", () => {
-        closeModal(driveSuccessModal);
-    });
-
-
-    driveConnectModal.addEventListener("click", event => {
-
-        if (event.target === driveConnectModal) {
-            closeModal(driveConnectModal);
-        }
-
-    });
-
-
-    driveSuccessModal.addEventListener("click", event => {
-
-        if (event.target === driveSuccessModal) {
-            closeModal(driveSuccessModal);
-        }
-
-    });
-
-
-    confirmDriveButton.addEventListener("click", async () => {
-
-        confirmDriveButton.disabled = true;
-        confirmDriveButton.textContent = "Connecting...";
-
-        try {
-
-            await GoogleDriveUploader.signIn();
-
-            updateDriveUI();
-            updateUploadButton();
-
-            closeModal(driveConnectModal);
-
-            openModal(driveSuccessModal);
-
-            showStatus(
-                "Google Drive connected successfully.",
-                "success"
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Google Drive login error:",
-                error
-            );
-
-            closeModal(driveConnectModal);
-
-            showStatus(
-                error.message ||
-                "Google Drive connection failed.",
-                "error"
-            );
-
-        } finally {
-
-            confirmDriveButton.disabled = false;
-            confirmDriveButton.textContent =
-                "Connect Google Drive";
-
-        }
-
-    });
-
-
-    document.addEventListener("keydown", event => {
-
-        if (event.key === "Escape") {
-            closeModal(driveConnectModal);
-            closeModal(driveSuccessModal);
-        }
-
-    });
-
-
-    /*
-     * Sign out.
-     */
-    logoutButton.addEventListener("click", () => {
-
-        GoogleDriveUploader.signOut();
-
-        updateDriveUI();
-
-        updateUploadButton();
-
-        showStatus(
-            "Google Drive disconnected.",
-            "info"
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
         );
-
-    });
-
-
-    /*
-     * Upload.
-     */
-    uploadButton.addEventListener("click", async () => {
-
-        if (!selectedFile) {
-
-            showStatus(
-                "Please select or capture an image.",
-                "error"
-            );
-
-            return;
-
-        }
-
-       if (!GoogleDriveUploader.isSignedIn()) {
-            showStatus("Please connect Google Drive first.", "error");
-            return;
-        }
-
-        const filename =
-            getGeneratedFilename();
-
-        if (!filename) {
-
-            showStatus(
-                "Please complete all product details.",
-                "error"
-            );
-
-            return;
-
-        }
-
-        try {
-
-            uploadButton.disabled = true;
-
-            showStatus(
-                "Uploading image to Google Drive...",
-                "info"
-            );
-
-            const result =
-                await GoogleDriveUploader.uploadImage(
-                    selectedFile,
-                    filename
-                );
-
-            showStatus(
-                `Upload successful!<br><br>
-                 File: <strong>${result.name}</strong><br>
-                 Saved in your Log HARDWARE Images folder.`,
-                "success"
-            );
-
-            /*
-             * Reset image.
-             */
-            selectedFile = null;
-
-            imageInput.value = "";
-            cameraInput.value = "";
-
-            imagePreview.src = "";
-            imagePreview.style.display = "none";
-
-            updateUploadButton();
-
-        } catch (error) {
-
-            console.error(error);
-
-            showStatus(
-                error.message,
-                "error"
-            );
-
-            updateUploadButton();
-
-        }
-
-    });
-
-
-    function showStatus(message, type) {
-
-        status.className = `status ${type}`;
-        status.innerHTML = message;
-
+        modal.setAttribute(
+            "inert",
+            ""
+        );
     }
 
 
     function updateDriveUI() {
 
-        if (GoogleDriveUploader.isSignedIn()) {
+        if (
+            window.GoogleDriveUploader &&
+            GoogleDriveUploader.isSignedIn()
+        ) {
 
-            driveStatus.textContent = "Connected";
-            driveStatus.style.color = "#047857";
+            driveStatus.textContent =
+                "Connected";
 
-            loginButton.style.display = "none";
-            logoutButton.style.display = "block";
+            driveStatus.style.color =
+                "#047857";
+
+            loginButton.style.display =
+                "none";
+
+            logoutButton.style.display =
+                "block";
 
         } else {
 
-            driveStatus.textContent = "Not connected";
-            driveStatus.style.color = "";
+            driveStatus.textContent =
+                "Not connected";
 
-            loginButton.style.display = "block";
-            logoutButton.style.display = "none";
+            driveStatus.style.color =
+                "";
 
+            loginButton.style.display =
+                "block";
+
+            logoutButton.style.display =
+                "none";
         }
-
     }
 
 
+    addProductButton.addEventListener(
+        "click",
+        () => {
+
+            createProductCard();
+
+            updateUploadAllButton();
+        }
+    );
+
+
+    resetButton.addEventListener(
+        "click",
+        () => {
+
+            productsContainer.innerHTML =
+                "";
+
+            productCounter =
+                0;
+
+            createProductCard();
+
+            setBatchStatus(
+                "All products reset.",
+                "info"
+            );
+
+            updateUploadAllButton();
+        }
+    );
+
+
+    loginButton.addEventListener(
+        "click",
+        () => {
+            openModal(driveConnectModal);
+        }
+    );
+
+
+    cancelDriveButton.addEventListener(
+        "click",
+        () => {
+            closeModal(driveConnectModal);
+        }
+    );
+
+
+    closeSuccessButton.addEventListener(
+        "click",
+        () => {
+            closeModal(driveSuccessModal);
+        }
+    );
+
+
+    driveConnectModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                driveConnectModal
+            ) {
+                closeModal(driveConnectModal);
+            }
+        }
+    );
+
+
+    driveSuccessModal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                driveSuccessModal
+            ) {
+                closeModal(driveSuccessModal);
+            }
+        }
+    );
+
+
+    confirmDriveButton.addEventListener(
+        "click",
+        async () => {
+
+            confirmDriveButton.disabled =
+                true;
+
+            confirmDriveButton.textContent =
+                "Connecting...";
+
+            try {
+
+                await GoogleDriveUploader.signIn();
+
+                updateDriveUI();
+
+                closeModal(
+                    driveConnectModal
+                );
+
+                openModal(
+                    driveSuccessModal
+                );
+
+                setBatchStatus(
+                    "Google Drive connected successfully.",
+                    "success"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Google Drive login error:",
+                    error
+                );
+
+                closeModal(
+                    driveConnectModal
+                );
+
+                setBatchStatus(
+                    error.message ||
+                    "Google Drive connection failed.",
+                    "error"
+                );
+
+            } finally {
+
+                confirmDriveButton.disabled =
+                    false;
+
+                confirmDriveButton.textContent =
+                    "Connect Google Drive";
+            }
+        }
+    );
+
+
+    logoutButton.addEventListener(
+        "click",
+        () => {
+
+            GoogleDriveUploader.signOut();
+
+            updateDriveUI();
+
+            setBatchStatus(
+                "Google Drive disconnected.",
+                "info"
+            );
+        }
+    );
+
+
     /*
-     * Initialize.
+     * Upload every product in the batch.
+     *
+     * Product rows remain intact after upload so the user
+     * can review the results. Reset All clears everything.
      */
-    window.addEventListener("load", () => {
+    uploadAllButton.addEventListener(
+        "click",
+        async () => {
 
-        GoogleDriveUploader.init();
+            const cards =
+                [...productsContainer.querySelectorAll(".product-card")];
 
-        updateDriveUI();
+            if (!cards.length) {
 
-        updateUploadButton();
+                setBatchStatus(
+                    "Add at least one product.",
+                    "error"
+                );
 
-    });
+                return;
+            }
+
+            if (!GoogleDriveUploader) {
+
+                setBatchStatus(
+                    "Google Drive uploader is not loaded. Please refresh the page.",
+                    "error"
+                );
+
+                return;
+            }
+
+            if (!updateUploadAllButton()) {
+
+                setBatchStatus(
+                    "Complete Product Name, Category, Brand, Size / Part Number and Image for every product.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            uploadAllButton.disabled =
+                true;
+
+            addProductButton.disabled =
+                true;
+
+            setBatchStatus(
+                "Uploading products to Google Drive...",
+                "info"
+            );
+
+
+            let successCount = 0;
+            let failureCount = 0;
+
+
+            for (
+                let index = 0;
+                index < cards.length;
+                index++
+            ) {
+
+                const card =
+                    cards[index];
+
+                const productNumber =
+                    index + 1;
+
+                const file =
+                    card.querySelector(
+                        ".product-image-input"
+                    ).files[0];
+
+                const filename =
+                    getGeneratedFilename(card);
+
+
+                setProductStatus(
+                    card,
+                    "Uploading...",
+                    "info"
+                );
+
+
+                try {
+
+                    const result =
+                        await GoogleDriveUploader.uploadImage(
+                            file,
+                            filename
+                        );
+
+                    successCount++;
+
+                    setProductStatus(
+                        card,
+                        `Uploaded successfully: ${result.name}`,
+                        "success"
+                    );
+
+                } catch (error) {
+
+                    failureCount++;
+
+                    setProductStatus(
+                        card,
+                        error.message ||
+                        "Upload failed.",
+                        "error"
+                    );
+                }
+            }
+
+
+            addProductButton.disabled =
+                false;
+
+
+            uploadAllButton.disabled =
+                false;
+
+
+            updateUploadAllButton();
+
+
+            if (failureCount === 0) {
+
+                setBatchStatus(
+                    `<strong>${successCount} product${successCount > 1 ? "s" : ""} uploaded successfully.</strong>`,
+                    "success"
+                );
+
+            } else {
+
+                setBatchStatus(
+                    `<strong>${successCount}</strong> uploaded successfully. ` +
+                    `<strong>${failureCount}</strong> failed. ` +
+                    `Review each product card for details.`,
+                    "error"
+                );
+            }
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Escape") {
+
+                if (
+                    driveConnectModal.classList.contains("show")
+                ) {
+                    closeModal(
+                        driveConnectModal
+                    );
+                }
+
+                if (
+                    driveSuccessModal.classList.contains("show")
+                ) {
+                    closeModal(
+                        driveSuccessModal
+                    );
+                }
+            }
+        }
+    );
+
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            const initialized =
+                GoogleDriveUploader.init();
+
+            if (!initialized) {
+
+                setBatchStatus(
+                    "Google Drive authentication could not be initialized. Please refresh the page.",
+                    "error"
+                );
+            }
+
+            createProductCard();
+
+            updateDriveUI();
+
+            updateUploadAllButton();
+        }
+    );
 
 </script>
 
