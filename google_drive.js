@@ -13,7 +13,7 @@
    ========================================================= */
 
 const GOOGLE_DRIVE_CONFIG = {
-  API_KEY: 'AIzaSyCUiubQLYjv96ydBAP9UwZ2dVfGVGWuUEk',
+  API_KEY: 'AIzaSyA1974JwYp1Qc8RMwUD3RM71sx_yI_k6kQ',
   FOLDER_ID: '1bKz5OdLYc6XTXeT-9FjgA8iceKlKyWAZ'
 };
 
