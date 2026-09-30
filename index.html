@@ -95,41 +95,49 @@
       </div>
     </section>
 
-    <!-- Categories Section: 2 Columns on Mobile -->
-    <section id="categories" class="category-section" aria-label="Appliance categories">
+        <!-- Catalogue is intentionally moved to category.html.
+         The dashboard only presents categories and store information. -->
+    <section class="category-cta-section" aria-label="Browse spare parts by category">
       <div class="section-head">
-        <span class="eyebrow">BROWSE BY APPLIANCE</span>
-        <h2>Shop by Category</h2>
-        <p>Select an appliance to filter spare parts available in Google Drive.</p>
+        <span class="eyebrow">FIND YOUR PART</span>
+        <h2>Choose a Category</h2>
+        <p>Select a category to open its dedicated spare-parts catalogue.</p>
       </div>
 
       <div class="category-grid">
-        <button class="category-card" type="button" data-category="General Tools" onclick="chooseCategory('General Tools')">
+        <a class="category-card" href="category.html?category=General%20Tools">
           <span class="category-icon" aria-hidden="true">🧰</span>
           <span class="category-name">General Tools</span>
-        </button>
-        <button class="category-card" type="button" data-category="Washing Machine" onclick="chooseCategory('Washing Machine')">
+          <span class="category-card-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="category-card" href="category.html?category=Washing%20Machine">
           <span class="category-icon" aria-hidden="true">🌀</span>
           <span class="category-name">Washing Machine</span>
-        </button>
-        <button class="category-card" type="button" data-category="Refrigerator" onclick="chooseCategory('Refrigerator')">
+          <span class="category-card-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="category-card" href="category.html?category=Refrigerator">
           <span class="category-icon" aria-hidden="true">❄️</span>
           <span class="category-name">Refrigerator</span>
-        </button>
-        <button class="category-card" type="button" data-category="Water Purifier" onclick="chooseCategory('Water Purifier')">
+          <span class="category-card-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="category-card" href="category.html?category=Water%20Purifier">
           <span class="category-icon" aria-hidden="true">💧</span>
           <span class="category-name">Water Purifier</span>
-        </button>
-        <button class="category-card" type="button" data-category="Microwave" onclick="chooseCategory('Microwave')">
+          <span class="category-card-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="category-card" href="category.html?category=Microwave">
           <span class="category-icon" aria-hidden="true">📻</span>
           <span class="category-name">Microwave</span>
-        </button>
-        <button class="category-card" type="button" data-category="AC Parts" onclick="chooseCategory('AC Parts')">
+          <span class="category-card-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="category-card" href="category.html?category=AC%20Parts">
           <span class="category-icon" aria-hidden="true">❄️</span>
           <span class="category-name">AC Parts</span>
-        </button>
+          <span class="category-card-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
+
 
     <!-- Brands Strip -->
     <section class="brand-strip" aria-label="Brands we stock">
