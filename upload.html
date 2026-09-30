@@ -617,43 +617,7 @@
             }
         }
 
-    
-/* Upload All stays hidden until Google Drive is connected */
-#uploadAllButton {
-    display: none;
-}
-
-.product-header-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.product-header-actions .login-button {
-    width: auto;
-    min-width: 190px;
-    height: 48px;
-    margin-bottom: 0;
-    white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-    .product-header-actions {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .product-header-actions .login-button {
-        width: 100%;
-        min-width: 0;
-    }
-}
-
-</style>
+    </style>
 </head>
 
 <body>
@@ -701,19 +665,45 @@
                 <h2>Products</h2>
                 <p>Add multiple products and upload their images in one batch.</p>
             </div>
-            <div class="product-header-actions">
-<button type="button" class="secondary-button add-product-button" id="addProductButton">
+            <button type="button" class="secondary-button add-product-button" id="addProductButton">
                 + Add Product
             </button>
-<button
+        </div>
+
+        <div id="productsContainer"></div>
+
+        <div class="batch-actions">
+            <button
+                type="button"
+                class="upload-button"
+                id="uploadAllButton"
+                disabled>
+                Upload All to Google Drive
+            </button>
+
+            <button
+                type="button"
+                class="secondary-button"
+                id="resetButton">
+                Reset All
+            </button>
+        </div>
+
+        <div id="batchStatus" class="status"></div>
+
+        <!-- CONNECT DRIVE -->
+        <button
             type="button"
             class="login-button"
             id="loginButton">
             Connect Google Drive
         </button>
+
+    </div>
+
 </div>
-        </div>
-        <!-- GOOGLE IDENTITY SERVICES -->
+
+<!-- GOOGLE IDENTITY SERVICES -->
 
     <!-- GOOGLE DRIVE CONNECT MODAL -->
     <div class="modal-overlay" id="driveConnectModal" aria-hidden="true" inert>
@@ -763,38 +753,10 @@
 
         </div>
     </div>
-        
+
 <script src="https://accounts.google.com/gsi/client"></script>
 
 <script src="google_drive_upload.js"></script>
-
-        <div id="productsContainer"></div>
-
-        <div class="batch-actions">
-            <button
-                type="button"
-                class="upload-button"
-                id="uploadAllButton"
-                disabled>
-                Upload All to Google Drive
-            </button>
-
-            <button
-                type="button"
-                class="secondary-button"
-                id="resetButton">
-                Reset All
-            </button>
-        </div>
-
-        <div id="batchStatus" class="status"></div>
-
-        <!-- CONNECT DRIVE -->
-        
-
-    </div>
-
-</div>
 
 <script>
 
@@ -943,20 +905,6 @@
 
     function updateUploadAllButton() {
 
-        // Keep the upload button hidden until Google Drive is connected.
-        const connected =
-            window.GoogleDriveUploader &&
-            GoogleDriveUploader.isSignedIn();
-
-        if (!connected) {
-            uploadAllButton.style.display = "none";
-            uploadAllButton.disabled = true;
-            return false;
-        }
-
-        // Show the button once Google Drive is connected.
-        uploadAllButton.style.display = "";
-
         const cards =
             [...productsContainer.querySelectorAll(".product-card")];
 
@@ -973,12 +921,8 @@
                 const brand =
                     card.querySelector(".product-brand").value;
 
-                const coCode =
-                    normalizeCode(
-                        card.querySelector(".product-co-code")?.value || ""
-                    );
-
-                const partNumber =
+                const coCode = normalizeCode(card.querySelector('.product-co-code')?.value || '');
+        const partNumber =
                     card.querySelector(".product-part-number").value.trim();
 
                 const file =
@@ -1435,8 +1379,6 @@
             logoutButton.style.display =
                 "none";
         }
-
-        updateUploadAllButton();
     }
 
 
@@ -1608,20 +1550,6 @@
     uploadAllButton.addEventListener(
         "click",
         async () => {
-
-        if (
-            !window.GoogleDriveUploader ||
-            !GoogleDriveUploader.isSignedIn()
-        ) {
-            setBatchStatus(
-                "Please connect Google Drive before uploading products.",
-                "error"
-            );
-            updateDriveUI();
-            return;
-        }
-
-
 
             const cards =
                 [...productsContainer.querySelectorAll(".product-card")];
@@ -1814,4 +1742,4 @@
 </script>
 
 </body>
-</html> 
+</html>
