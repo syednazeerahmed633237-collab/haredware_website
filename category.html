@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Spare Parts Catalogue | LOG HARDWARE</title>
+  <meta name="description" content="Browse LOG HARDWARE spare parts by appliance category, brand, model and part number.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="category-page">
+
+  <header class="topbar">
+    <div class="topbar-container">
+      <div class="brand-wrapper">
+        <a class="site-name" href="index.html" aria-label="LOG HARDWARE Home">
+          <span class="logo-accent">LOG</span>
+          <span class="logo-sub">HARDWARE</span>
+        </a>
+      </div>
+      <a class="category-back-link" href="index.html#categories">← Categories</a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
+        <span class="hamburger-icon" aria-hidden="true">☰</span>
+        <span class="menu-label">Menu</span>
+      </button>
+      <nav class="topbar-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html#categories">Categories</a>
+        <a href="index.html#store">Store / Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
+    <div class="mobile-nav-head">
+      <div class="site-name">
+        <span class="logo-accent">LOG</span>
+        <span class="logo-sub">HARDWARE</span>
+      </div>
+      <button id="closeMobileNav" class="icon-button" type="button" aria-label="Close navigation menu">×</button>
+    </div>
+    <div class="mobile-nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#categories">Categories</a>
+      <a href="index.html#store">Store</a>
+      <a href="javascript:void(0)" onclick="openStoreWhatsApp();" class="whatsapp-nav">💬 Chat on WhatsApp</a>
+    </div>
+  </nav>
+  <div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+
+  <main>
+    <section class="category-hero">
+      <div>
+        <span class="eyebrow">SPARE PARTS CATALOGUE</span>
+        <h1 id="categoryPageTitle">Spare Parts</h1>
+        <p id="categoryPageDescription">Browse available parts for this category.</p>
+      </div>
+      <a class="category-change-btn" href="index.html#categories">Change Category</a>
+    </section>
+
+    <section class="filter-section category-catalogue-section" aria-label="Search and filter spare parts">
+      <div class="filter-card">
+        <div class="filter-grid">
+          <div class="filter-group filter-group-search">
+            <label class="filter-label" for="searchFilter">Search</label>
+            <input id="searchFilter" class="filter-input" type="search" placeholder="Part name, SKU, brand, model...">
+          </div>
+
+          <div class="filter-group filter-group-category">
+            <label class="filter-label" for="categoryFilter">Category</label>
+            <select id="categoryFilter" class="filter-select">
+              <option value="All">All Categories</option>
+            </select>
+          </div>
+
+          <div class="filter-group filter-group-brand">
+            <label class="filter-label" for="brandFilter">Brand</label>
+            <select id="brandFilter" class="filter-select">
+              <option value="All">All Brands</option>
+            </select>
+          </div>
+
+          <button class="filter-clear-btn" id="clearFilters" type="button">Clear Filters</button>
+        </div>
+      </div>
+
+      <div class="drive-catalogue-note">
+        <strong>Live Google Drive catalogue</strong>
+        <span>Only parts belonging to <strong id="categoryNote">this category</strong> are shown on this page.</span>
+      </div>
+
+      <div class="catalogue-status-bar">
+        <p class="product-count-text">
+          Showing <strong id="productCount">0 products</strong>. Select your size variant, choose quantity and add to cart.
+        </p>
+      </div>
+
+      <section id="products-section" class="products-container">
+        <div id="productGrid" class="product-grid" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand-col">
+        <a class="footer-logo" href="index.html">
+          <span class="logo-accent">LOG</span> HARDWARE
+        </a>
+        <p class="footer-desc">Genuine hardware and appliance spare parts from Faizan B Hardware, KGF, Karnataka.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-heading">Catalogue</div>
+        <a href="index.html#categories">All Categories</a>
+        <a href="index.html#store">Store / Contact</a>
+        <a href="javascript:void(0)" onclick="openStoreWhatsApp()">WhatsApp Support</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-inner">
+        <span>© 2026 LOG HARDWARE · Faizan B Hardware, KGF, Karnataka.</span>
+        <span>Genuine Indian Appliance &amp; Hardware Spare Parts</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="google_drive.js"></script>
+  <script src="app.js"></script>
+  <script src="catalogue.js"></script>
+</body>
+</html>
