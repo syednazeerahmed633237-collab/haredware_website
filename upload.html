@@ -619,6 +619,9 @@
 
         selectedFile = file;
 
+        updateUploadButton();
+        requestAnimationFrame(updateUploadButton);
+
         const reader = new FileReader();
 
         reader.onload = function(event) {
@@ -656,17 +659,45 @@
      */
     function updateUploadButton() {
 
-        const valid =
-            productName.value.trim() &&
-            category.value &&
-            brand.value &&
-            partNumber.value.trim() &&
-            selectedFile &&
-            window.GoogleDriveUploader &&
-            GoogleDriveUploader.isSignedIn();
+        const hasProductName =
+            productName.value.trim().length > 0;
 
-        uploadButton.disabled = !valid;
+        const hasCategory =
+            category.value.trim().length > 0;
 
+        const hasBrand =
+            brand.value.trim().length > 0;
+
+        const hasPartNumber =
+            partNumber.value.trim().length > 0;
+
+        const hasImage =
+            selectedFile instanceof File;
+
+        const isDriveConnected =
+            Boolean(
+                window.GoogleDriveUploader &&
+                typeof GoogleDriveUploader.isSignedIn === "function" &&
+                GoogleDriveUploader.isSignedIn()
+            );
+
+        const ready =
+            hasProductName &&
+            hasCategory &&
+            hasBrand &&
+            hasPartNumber &&
+            hasImage &&
+            isDriveConnected;
+
+        if (ready) {
+            uploadButton.disabled = false;
+            uploadButton.removeAttribute("disabled");
+        } else {
+            uploadButton.disabled = true;
+            uploadButton.setAttribute("disabled", "disabled");
+        }
+
+        return ready;
     }
 
 
@@ -700,6 +731,7 @@
             updateDriveUI();
 
             updateUploadButton();
+            requestAnimationFrame(updateUploadButton);
 
             showStatus(
                 "Google Drive connected successfully.",
