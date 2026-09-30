@@ -943,6 +943,20 @@
 
     function updateUploadAllButton() {
 
+        // Keep the upload button hidden until Google Drive is connected.
+        const connected =
+            window.GoogleDriveUploader &&
+            GoogleDriveUploader.isSignedIn();
+
+        if (!connected) {
+            uploadAllButton.style.display = "none";
+            uploadAllButton.disabled = true;
+            return false;
+        }
+
+        // Show the button once Google Drive is connected.
+        uploadAllButton.style.display = "";
+
         const cards =
             [...productsContainer.querySelectorAll(".product-card")];
 
@@ -959,8 +973,12 @@
                 const brand =
                     card.querySelector(".product-brand").value;
 
-                const coCode = normalizeCode(card.querySelector('.product-co-code')?.value || '');
-        const partNumber =
+                const coCode =
+                    normalizeCode(
+                        card.querySelector(".product-co-code")?.value || ""
+                    );
+
+                const partNumber =
                     card.querySelector(".product-part-number").value.trim();
 
                 const file =
@@ -1417,6 +1435,8 @@
             logoutButton.style.display =
                 "none";
         }
+
+        updateUploadAllButton();
     }
 
 
