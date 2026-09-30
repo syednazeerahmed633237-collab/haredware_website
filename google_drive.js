@@ -13,7 +13,7 @@
    ========================================================= */
 
 const GOOGLE_DRIVE_CONFIG = {
-  API_KEY: 'PASTE_YOUR_GOOGLE_API_KEY_HERE',
+  API_KEY: 'AIzaSyCUiubQLYjv96ydBAP9UwZ2dVfGVGWuUEk',
   FOLDER_ID: '1bKz5OdLYc6XTXeT-9FjgA8iceKlKyWAZ'
 };
 
