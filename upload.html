@@ -1014,16 +1014,8 @@
 
         }
 
-        if (
-            !window.GoogleDriveUploader ||
-            !GoogleDriveUploader.isSignedIn()
-        ) {
-            showStatus(
-                "Please connect Google Drive first.",
-                "error"
-            );
-
-            updateUploadButton();
+       if (!GoogleDriveUploader.isSignedIn()) {
+            showStatus("Please connect Google Drive first.", "error");
             return;
         }
 
