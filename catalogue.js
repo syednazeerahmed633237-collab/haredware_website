@@ -131,7 +131,7 @@
           <div class="product-info-row"><span>CO Code</span><strong>${esc(p.coCode)}</strong></div>
         </div>
         <div class="product-actions">
-          <button type="button" class="add-cart-button view-part">View Part</button>
+          <button type="button" class="add-cart-button add-to-cart">🛒 Add to Cart</button>
           <button type="button" class="product-whatsapp-button enquire-part">💬 Enquire</button>
         </div>
       </div>`;
@@ -140,7 +140,11 @@
       this.style.display='none';
       this.parentElement.insertAdjacentHTML('afterbegin','<div style="padding:45px 15px;text-align:center;color:#83776d">Image unavailable</div>');
     });
-    el.querySelector('.view-part').addEventListener('click', () => window.open(p.image, '_blank'));
+    el.querySelector('.add-to-cart').addEventListener('click', () => {
+      if (typeof window.addProductToCart === 'function') {
+        window.addProductToCart(p);
+      }
+    });
     el.querySelector('.enquire-part').addEventListener('click', () => {
       const msg = `Hello LOG HARDWARE, I need this spare part. Product: ${title(p.product)}, Category: ${title(p.category)}, Brand: ${title(p.brand)}, Part Number: ${p.partNumber}, CO Code: ${p.coCode}`;
       const phone = '919999999999';
