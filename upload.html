@@ -620,7 +620,6 @@
         selectedFile = file;
 
         updateUploadButton();
-        requestAnimationFrame(updateUploadButton);
 
         const reader = new FileReader();
 
@@ -659,41 +658,24 @@
      */
     function updateUploadButton() {
 
-        const hasProductName =
-            productName.value.trim().length > 0;
-
-        const hasCategory =
-            category.value.trim().length > 0;
-
-        const hasBrand =
-            brand.value.trim().length > 0;
-
-        const hasPartNumber =
-            partNumber.value.trim().length > 0;
-
-        const hasImage =
-            selectedFile instanceof File;
-
-        const isDriveConnected =
-            Boolean(
-                window.GoogleDriveUploader &&
-                typeof GoogleDriveUploader.isSignedIn === "function" &&
-                GoogleDriveUploader.isSignedIn()
-            );
-
+        /*
+         * The button only depends on the form data and image.
+         * Google authentication is checked again when Upload is clicked.
+         * This avoids the OAuth token state preventing the button from
+         * visually enabling after a successful sign-in.
+         */
         const ready =
-            hasProductName &&
-            hasCategory &&
-            hasBrand &&
-            hasPartNumber &&
-            hasImage &&
-            isDriveConnected;
+            productName.value.trim() !== "" &&
+            category.value !== "" &&
+            brand.value !== "" &&
+            partNumber.value.trim() !== "" &&
+            selectedFile !== null;
+
+        uploadButton.disabled = !ready;
 
         if (ready) {
-            uploadButton.disabled = false;
             uploadButton.removeAttribute("disabled");
         } else {
-            uploadButton.disabled = true;
             uploadButton.setAttribute("disabled", "disabled");
         }
 
@@ -731,7 +713,6 @@
             updateDriveUI();
 
             updateUploadButton();
-            requestAnimationFrame(updateUploadButton);
 
             showStatus(
                 "Google Drive connected successfully.",
@@ -785,6 +766,19 @@
 
             return;
 
+        }
+
+        if (
+            !window.GoogleDriveUploader ||
+            !GoogleDriveUploader.isSignedIn()
+        ) {
+            showStatus(
+                "Please connect Google Drive first.",
+                "error"
+            );
+
+            updateUploadButton();
+            return;
         }
 
         const filename =
