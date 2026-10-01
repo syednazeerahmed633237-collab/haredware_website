@@ -458,6 +458,220 @@
             color: #1e40af;
         }
 
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #ffffff;
+            color: #111827;
+            outline: none;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+        }
+
+        .view-products-button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .product-view-modal {
+            width: min(760px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+        }
+
+        .product-view-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .product-view-header h2 {
+            margin: 0 0 5px;
+            font-size: 22px;
+        }
+
+        .product-view-header p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .product-view-close {
+            border: 0;
+            background: #f3f4f6;
+            color: #111827;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .saved-products-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .saved-product-item {
+            display: grid;
+            grid-template-columns: 82px 1fr auto;
+            gap: 14px;
+            align-items: center;
+            padding: 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .saved-product-thumb {
+            width: 82px;
+            height: 82px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #f3f4f6;
+        }
+
+        .saved-product-info h3 {
+            margin: 0 0 5px;
+            font-size: 15px;
+        }
+
+        .saved-product-info p {
+            margin: 2px 0;
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .saved-product-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .small-action {
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 9px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            color: #111827;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .small-action.primary {
+            background: #111827;
+            color: #fff;
+            border-color: #111827;
+        }
+
+        .small-action.danger {
+            color: #b91c1c;
+            border-color: #fecaca;
+            background: #fff;
+        }
+
+        .product-detail {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+        }
+
+        .product-detail-image {
+            width: 100%;
+            height: 260px;
+            object-fit: contain;
+            border-radius: 14px;
+            background: #f3f4f6;
+        }
+
+        .product-detail-fields {
+            display: grid;
+            gap: 13px;
+        }
+
+        .detail-row {
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #111827;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .detail-url {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .view-empty {
+            padding: 28px;
+            text-align: center;
+            color: #6b7280;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+            }
+
+            .product-detail-image {
+                height: 220px;
+            }
+
+            .saved-product-item {
+                grid-template-columns: 64px 1fr;
+            }
+
+            .saved-product-thumb {
+                width: 64px;
+                height: 64px;
+            }
+
+            .saved-product-actions {
+                grid-column: 1 / -1;
+                justify-content: stretch;
+            }
+
+            .saved-product-actions .small-action {
+                flex: 1;
+            }
+        }
+
         @media (max-width: 600px) {
             .page {
                 padding: 20px 14px 40px;
@@ -634,10 +848,10 @@
 
         <div class="brand">Log HARDWARE</div>
 
-        <h1>Upload Product Image</h1>
+        <h1>Upload Product</h1>
 
         <p class="subtitle">
-            Enter the product details and upload or capture the product image.
+            Enter product details, add an About description, and upload the product image to Google Drive.
         </p>
     </div>
 
@@ -689,6 +903,13 @@
             </button>
         </div>
 
+        <button
+            type="button"
+            class="secondary-button view-products-button"
+            id="viewProductsButton">
+            View Saved Products
+        </button>
+
         <div id="batchStatus" class="status"></div>
 
         <!-- CONNECT DRIVE -->
@@ -729,6 +950,35 @@
         </div>
     </div>
 
+
+
+    <!-- SAVED PRODUCTS / VIEW MODAL -->
+    <div class="modal-overlay" id="savedProductsModal" aria-hidden="true" inert>
+        <div class="product-view-modal" role="dialog" aria-modal="true" aria-labelledby="savedProductsTitle">
+            <div class="product-view-header">
+                <div>
+                    <h2 id="savedProductsTitle">Saved Products</h2>
+                    <p>View, edit, or delete products uploaded from this page.</p>
+                </div>
+                <button type="button" class="product-view-close" id="closeSavedProductsButton" aria-label="Close">×</button>
+            </div>
+            <div id="savedProductsList" class="saved-products-list"></div>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div class="modal-overlay" id="productDetailModal" aria-hidden="true" inert>
+        <div class="product-view-modal" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle">
+            <div class="product-view-header">
+                <div>
+                    <h2 id="productDetailTitle">Product Details</h2>
+                    <p>Product information and Google Drive image URL.</p>
+                </div>
+                <button type="button" class="product-view-close" id="closeProductDetailButton" aria-label="Close">×</button>
+            </div>
+            <div id="productDetailContent"></div>
+        </div>
+    </div>
 
     <!-- GOOGLE DRIVE CONNECTED MODAL -->
     <div class="modal-overlay" id="driveSuccessModal" aria-hidden="true" inert>
@@ -791,6 +1041,27 @@
 
     const driveSuccessModal =
         document.getElementById("driveSuccessModal");
+
+    const viewProductsButton =
+        document.getElementById("viewProductsButton");
+
+    const savedProductsModal =
+        document.getElementById("savedProductsModal");
+
+    const savedProductsList =
+        document.getElementById("savedProductsList");
+
+    const closeSavedProductsButton =
+        document.getElementById("closeSavedProductsButton");
+
+    const productDetailModal =
+        document.getElementById("productDetailModal");
+
+    const productDetailContent =
+        document.getElementById("productDetailContent");
+
+    const closeProductDetailButton =
+        document.getElementById("closeProductDetailButton");
 
     const cancelDriveButton =
         document.getElementById("cancelDriveButton");
@@ -1056,6 +1327,16 @@
 
                 <div class="form-group full">
                     <label>
+                        About
+                    </label>
+                    <textarea
+                        class="product-about"
+                        placeholder="Write a short description or important information about this product..."
+                        autocomplete="off"></textarea>
+                </div>
+
+                <div class="form-group full">
+                    <label>
                         Product Image <span class="required">*</span>
                     </label>
 
@@ -1123,6 +1404,9 @@
         const coCodeInput =
             card.querySelector(".product-co-code");
 
+        const aboutInput =
+            card.querySelector(".product-about");
+
         const imageInput =
             card.querySelector(".product-image-input");
 
@@ -1147,7 +1431,8 @@
             categoryInput,
             brandInput,
             partNumberInput,
-            coCodeInput
+            coCodeInput,
+            aboutInput
         ].forEach(element => {
 
             element.addEventListener(
@@ -1415,6 +1700,29 @@
     );
 
 
+
+    viewProductsButton.addEventListener("click", openSavedProductsModal);
+
+    closeSavedProductsButton.addEventListener("click", () => {
+        closeModal(savedProductsModal);
+    });
+
+    closeProductDetailButton.addEventListener("click", () => {
+        closeModal(productDetailModal);
+    });
+
+    savedProductsModal.addEventListener("click", event => {
+        if (event.target === savedProductsModal) {
+            closeModal(savedProductsModal);
+        }
+    });
+
+    productDetailModal.addEventListener("click", event => {
+        if (event.target === productDetailModal) {
+            closeModal(productDetailModal);
+        }
+    });
+
     loginButton.addEventListener(
         "click",
         () => {
@@ -1547,6 +1855,225 @@
      * Product rows remain intact after upload so the user
      * can review the results. Reset All clears everything.
      */
+
+    const PRODUCTS_STORAGE_KEY = "logHardwareProducts";
+
+    function loadSavedProducts() {
+        try {
+            const raw = localStorage.getItem(PRODUCTS_STORAGE_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            console.error("Could not read saved products:", error);
+            return [];
+        }
+    }
+
+    function saveSavedProducts(products) {
+        localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+    }
+
+    function getDriveImageUrl(result) {
+        if (!result) return "";
+
+        return (
+            result.url ||
+            result.webViewLink ||
+            result.webContentLink ||
+            result.downloadUrl ||
+            result.download_url ||
+            result.fileUrl ||
+            result.file_url ||
+            ""
+        );
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function openSavedProductsModal() {
+        renderSavedProducts();
+        openModal(savedProductsModal);
+    }
+
+    function renderSavedProducts() {
+        const products = loadSavedProducts();
+
+        if (!products.length) {
+            savedProductsList.innerHTML =
+                '<div class="view-empty">No saved products yet. Upload a product first.</div>';
+            return;
+        }
+
+        savedProductsList.innerHTML = products.map(product => `
+            <div class="saved-product-item">
+                <img
+                    class="saved-product-thumb"
+                    src="${escapeHtml(product.imageUrl || "")}"
+                    alt="${escapeHtml(product.name)}"
+                    onerror="this.style.visibility='hidden';">
+                <div class="saved-product-info">
+                    <h3>${escapeHtml(product.name)}</h3>
+                    <p>${escapeHtml(product.brand)} · ${escapeHtml(product.category)}</p>
+                    <p>Part No: ${escapeHtml(product.partNumber)} · CO: ${escapeHtml(product.coCode)}</p>
+                </div>
+                <div class="saved-product-actions">
+                    <button class="small-action primary" type="button" data-view-product="${escapeHtml(product.id)}">View</button>
+                    <button class="small-action" type="button" data-edit-product="${escapeHtml(product.id)}">Edit</button>
+                    <button class="small-action danger" type="button" data-delete-product="${escapeHtml(product.id)}">Delete</button>
+                </div>
+            </div>
+        `).join("");
+
+        savedProductsList.querySelectorAll("[data-view-product]").forEach(button => {
+            button.addEventListener("click", () => {
+                showProductDetails(button.dataset.viewProduct);
+            });
+        });
+
+        savedProductsList.querySelectorAll("[data-edit-product]").forEach(button => {
+            button.addEventListener("click", () => {
+                editSavedProduct(button.dataset.editProduct);
+            });
+        });
+
+        savedProductsList.querySelectorAll("[data-delete-product]").forEach(button => {
+            button.addEventListener("click", () => {
+                deleteSavedProduct(button.dataset.deleteProduct);
+            });
+        });
+    }
+
+    function findSavedProduct(id) {
+        return loadSavedProducts().find(product => String(product.id) === String(id));
+    }
+
+    function showProductDetails(id) {
+        const product = findSavedProduct(id);
+        if (!product) return;
+
+        productDetailContent.innerHTML = `
+            <div class="product-detail">
+                <div>
+                    <img
+                        class="product-detail-image"
+                        src="${escapeHtml(product.imageUrl || "")}"
+                        alt="${escapeHtml(product.name)}"
+                        onerror="this.alt='Image URL unavailable';">
+                </div>
+                <div class="product-detail-fields">
+                    <div class="detail-row">
+                        <div class="detail-label">Product Name</div>
+                        <div class="detail-value">${escapeHtml(product.name)}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Category</div>
+                        <div class="detail-value">${escapeHtml(product.category)}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Brand</div>
+                        <div class="detail-value">${escapeHtml(product.brand)}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Size / Part Number</div>
+                        <div class="detail-value">${escapeHtml(product.partNumber)}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">CO Code</div>
+                        <div class="detail-value">${escapeHtml(product.coCode)}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">About</div>
+                        <div class="detail-value">${escapeHtml(product.about || "No description added.")}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Image URL</div>
+                        <div class="detail-value">
+                            ${product.imageUrl
+                                ? `<a class="detail-url" href="${escapeHtml(product.imageUrl)}" target="_blank" rel="noopener">${escapeHtml(product.imageUrl)}</a>`
+                                : "No image URL returned by Google Drive uploader."}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top:20px;">
+                <button type="button" class="secondary-button" id="detailEditButton">Edit</button>
+                <button type="button" class="upload-button" id="detailCloseButton">Close</button>
+            </div>
+        `;
+
+        openModal(productDetailModal);
+
+        document.getElementById("detailCloseButton").onclick = () => closeModal(productDetailModal);
+        document.getElementById("detailEditButton").onclick = () => editSavedProduct(id);
+    }
+
+    function editSavedProduct(id) {
+        const product = findSavedProduct(id);
+        if (!product) return;
+
+        closeModal(savedProductsModal);
+        closeModal(productDetailModal);
+
+        const card = createProductCard();
+        card.querySelector(".product-name").value = product.name || "";
+        card.querySelector(".product-category").value = product.category || "";
+        card.querySelector(".product-brand").value = product.brand || "";
+        card.querySelector(".product-part-number").value = product.partNumber || "";
+        card.querySelector(".product-co-code").value = product.coCode || "";
+        card.querySelector(".product-about").value = product.about || "";
+
+        getGeneratedFilename(card);
+        updateUploadAllButton();
+
+        setBatchStatus(
+            "Product loaded for editing. Re-upload it to save the updated image/product record.",
+            "info"
+        );
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function deleteSavedProduct(id) {
+        const product = findSavedProduct(id);
+        if (!product) return;
+
+        if (!confirm(`Delete "${product.name}" from the saved product list? This does not delete the image from Google Drive.`)) {
+            return;
+        }
+
+        const remaining = loadSavedProducts().filter(item => String(item.id) !== String(id));
+        saveSavedProducts(remaining);
+        renderSavedProducts();
+    }
+
+    function saveUploadedProduct(card, result, filename) {
+        const product = {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            name: card.querySelector(".product-name").value.trim(),
+            category: card.querySelector(".product-category").value,
+            brand: card.querySelector(".product-brand").value,
+            partNumber: card.querySelector(".product-part-number").value.trim(),
+            coCode: normalizeCode(card.querySelector(".product-co-code").value),
+            about: card.querySelector(".product-about").value.trim(),
+            filename,
+            imageUrl: getDriveImageUrl(result),
+            driveFileId: result?.id || result?.fileId || "",
+            createdAt: new Date().toISOString()
+        };
+
+        const products = loadSavedProducts();
+        products.unshift(product);
+        saveSavedProducts(products);
+
+        return product;
+    }
+
     uploadAllButton.addEventListener(
         "click",
         async () => {
@@ -1637,11 +2164,19 @@
                             filename
                         );
 
+                    const savedProduct =
+                        saveUploadedProduct(card, result, filename);
+
                     successCount++;
+
+                    const imageUrlMessage =
+                        savedProduct.imageUrl
+                            ? ` Image URL saved.`
+                            : ` Upload completed, but the Drive uploader did not return an image URL.`;
 
                     setProductStatus(
                         card,
-                        `Uploaded successfully: ${result.name}`,
+                        `Uploaded successfully: ${result.name}.${imageUrlMessage}`,
                         "success"
                     );
 
@@ -1710,6 +2245,14 @@
                     closeModal(
                         driveSuccessModal
                     );
+                }
+
+                if (savedProductsModal.classList.contains("show")) {
+                    closeModal(savedProductsModal);
+                }
+
+                if (productDetailModal.classList.contains("show")) {
+                    closeModal(productDetailModal);
                 }
             }
         }
